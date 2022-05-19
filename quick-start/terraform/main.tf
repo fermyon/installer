@@ -21,12 +21,12 @@ locals {
   spin_version     = "v0.2.0"
   spin_checksum    = "f5c25a7f754ef46dfc4b2361d6f34d40564768a60d7bc0d183dc26fe1bdcfae0"
 
-  hippo_version    = "v0.9.1"
-  hippo_checksum   = "a31f752a805032411b0c2b26829eba881897d0535f7377ecc74a7ce7503618fb"
+  hippo_version    = "v0.10.0"
+  hippo_checksum   = "5c82885b179bc392698343a5bdb36954dfdab1442e333fce32ef38f49548bc8e"
 }
 
 # -----------------------------------------------------------------------------
-# AMI
+# AMI using Canonical's Ubuntu AMD64 offering
 # -----------------------------------------------------------------------------
 
 data "aws_ami" "ubuntu" {
@@ -61,7 +61,7 @@ data "aws_ami" "ubuntu" {
 # perhaps we should remove.
 
 resource "aws_vpc" "default" {
-  cidr_block           = "10.0.0.0/16"
+  cidr_block           = var.vpc_cidr_block
   enable_dns_hostnames = true
 
   tags = {
@@ -75,7 +75,7 @@ resource "aws_internet_gateway" "gw" {
 
 resource "aws_subnet" "default" {
   vpc_id                  = aws_vpc.default.id
-  cidr_block              = "10.0.0.0/24"
+  cidr_block              = var.subnet_cidr_block
   map_public_ip_on_launch = true
 
   tags = {
@@ -88,10 +88,12 @@ resource "aws_subnet" "default" {
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.default.id
 
-  route {
-    # TODO: this should be var.allowed_inbound_cidr_blocks (for_each?)
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.gw.id
+  dynamic "route" {
+    for_each = var.allowed_inbound_cidr_blocks
+    content {
+      cidr_block = route.value
+      gateway_id = aws_internet_gateway.gw.id
+    }
   }
 
   tags = {
@@ -100,13 +102,13 @@ resource "aws_route_table" "public" {
 }
 
 resource "aws_route_table_association" "public"{
-    subnet_id = "${aws_subnet.default.id}"
-    route_table_id = "${aws_route_table.public.id}"
+  subnet_id = "${aws_subnet.default.id}"
+  route_table_id = "${aws_route_table.public.id}"
 }
 
 resource "aws_network_interface" "default" {
   subnet_id   = aws_subnet.default.id
-  private_ips = ["10.0.0.12"]
+  private_ips = [var.private_ip_address]
   security_groups = [aws_security_group.ec2.id]
 
   tags = {
@@ -132,7 +134,7 @@ resource "aws_eip" "lb" {
 resource "aws_eip_association" "lb" {
   instance_id   = aws_instance.ec2.id
   allocation_id = aws_eip.lb.id
-  private_ip_address = "10.0.0.12"
+  private_ip_address = var.private_ip_address
 
   depends_on = [
     aws_eip.lb,

@@ -1,39 +1,67 @@
 # Nomad on AWS - Quick Start
 
-# Prereqs
+# Prerequisites
 
-- AWS account
-  - Secrets/values via env vars:
-    - `AWS_ACCESS_KEY_ID=xxx`
-    - `AWS_SECRET_ACCESS_KEY=xxx`
-    - `AWS_DEFAULT_REGION=us-east-1`
-  - Or local `aws` CLI configuration (see `~/.aws/config` and `~/.aws/credentials`)
+- An AWS account
+  - The credentials needed by Terraform can be provided via env vars:
+    ```console
+      export AWS_ACCESS_KEY_ID=xxx
+      export AWS_SECRET_ACCESS_KEY=xxx
+      export AWS_DEFAULT_REGION=us-east-1
+    ```
+  - Or via local [aws CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+    configuration (see `~/.aws/config` and `~/.aws/credentials`)
 
-- `terraform` cli
+- The [terraform CLI](https://learn.hashicorp.com/tutorials/terraform/install-cli#install-terraform)
 
 # Resources deployed
 
-TODO
+This example creates the following resources in the provided AWS account:
+  - 1 EC2 instance (default size: `t2.micro`)
+  - 1 Elastic IP address (associated with instance)
+    - This is useful as it won't change with instance reboots and is a known
+      value for constructing Hippo and Bindle URLs
+  - 1 VPC to host the EC2 instance, using a private IP address range
+    - 1 subnet
+    - 1 network interface
+    - 1 custom security group with
+      - Inbound connections allowed for ports 22, 80 and 443
+        - see `var.allowed_inbound_cidr_blocks` for allowed origin IP addresses
+      - All outbound connections allowed
+    - 1 internet gateway and route table for connection to the broader internet
+  - 1 SSH keypair
+    - see `var.allowed_ssh_cidr_blocks` for allowed origin IP addresses
 
 # Security disclaimer
 
-TODO
+By default, the allowed inbound and SSH CIDR block is `0.0.0.0/0` aka The Entire Internet.
 
-At least a disclaimer around allowed ssh/inbound cidr blocks (should really limit to your own IP, etc),
-perhaps we should update the defaults in variables.tf to be empty (no access) as well.
+It is certainly advised to scope the allowed SSH CIDR block down to a single IP or known subset.
+
+As this example takes a stock Ubuntu AMI and then proceeds to download Fermyon and Hashistack binaries,
+the default inbound CIDR block is likely necessary for first startup. After confirmation that the
+Fermyon Platform is up and running - and as long as subsequent apps/workloads won't need access to
+the broader internet - this value may be updated on a subsequent `terraform apply` if desired, e.g.
+`terraform apply -var=allowed_inbound_cidr_blocks=["75.75.75.75/32"]`.
 
 # How to Deploy
 
-Deploy with Let's Encrypt staging URL for testing:
+Deploy with all defaults and using the Let's Encrypt staging URL for testing:
 
 ```console
 terraform apply
 ```
 
-Deploy with Let's Encrypt prod URL for happy TLS:
+Deploy with all defaults and using the Let's Encrypt prod URL for happy TLS:
 
 ```console
 terraform apply -var='letsencrypt_env=prod'
+```
+
+Deploy with a custom instance name, perhaps so multiple examples can co-exist in the same region:
+
+```console
+terraform apply -var='instance_name=fermyonrocks'
 ```
 
 Conversely, when all wrapped up, resources can be destroyed via:
@@ -42,15 +70,23 @@ Conversely, when all wrapped up, resources can be destroyed via:
 terraform destroy
 ```
 
-# SSH into EC2 instance
+# Interacting with the Fermyon Platform
+
+Once this example has been deployed, you're ready to start building and deploying applications
+on the Fermyon Platform.
+
+Follow the [Spin documentation](https://spin.fermyon.dev/) or
+[Hippo documentation](https://docs.hippofactory.dev/) to get started.
+
+# Troubleshooting/Debugging
+
+## SSH into EC2 instance
 
 ```console
 terraform output -raw ec2_ssh_private_key > /tmp/ec2_ssh_private_key.pem
 chmod 0600 /tmp/ec2_ssh_private_key.pem
 ssh -i /tmp/ec2_ssh_private_key.pem ubuntu@$(terraform output -raw eip_public_ip_address)
 ```
-
-# Troubleshooting/Debugging
 
 Once on the instance, output from user-data.sh can be checked like so:
 
@@ -117,13 +153,4 @@ ubuntu@ip-10-0-0-12:~$ nomad logs -job traefik
 time="2022-05-18T23:42:32Z" level=info msg="Configuration loaded from file: /home/ubuntu/data/nomad/alloc/1737c563-b9d8-cd1e-65dc-a1f7fb9cdd48/traefik/local/traefik.toml"
 time="2022-05-18T23:42:32Z" level=info msg="Traefik version 2.6.6 built on 2022-05-03T16:58:48Z"
 ...
-```
-
-```console
-ubuntu@ip-10-0-0-12:~$ nomad logs -tail -n 10 -job traefik
-ad
-time="2022-05-18T23:50:47Z" level=debug msg="Filtering disabled item" providerName=consulcatalog serviceName=nomad-client
-time="2022-05-18T23:50:47Z" level=debug msg="Filtering disabled item" serviceName=traefik providerName=consulcatalog
-time="2022-05-18T23:50:47Z" level=debug msg="Configuration received from provider consulcatalog: {\"http\":{\"routers\":{\"bindle\":{\"entryPoints\":[\"websecure\"],\"service\":\"bindle\",\"rule\":\"Host(`bindle.52.44.146.193.sslip.io`)\",\"tls\":{\"certResolver\":\"letsencrypt-tls-prod\",\"domains\":[{\"main\":\"bindle.52.44.146.193.sslip.io\"}]}},\"hippo\":{\"entryPoints\":[\"websecure\"],\"service\":\"hippo\",\"rule\":\"Host(`hippo.52.44.146.193.sslip.io`)\",\"tls\":{\"certResolver\":\"letsencrypt-tls-prod\",\"domains\":[{\"main\":\"hippo.52.44.146.193.sslip.io\"}]}}},\"services\":{\"bindle\":{\"loadBalancer\":{\"servers\":[{\"url\":\"http://10.0.0.12:29096\"}],\"passHostHeader\":true}},\"hippo\":{\"loadBalancer\":{\"servers\":[{\"url\":\"http://10.0.0.12:5000\"}],\"passHostHeader\":true}}}},\"tcp\":{},\"udp\":{}}" providerName=consulcatalog
-time="2022-05-18T23:50:47Z" level=debug msg="Skipping same configuration" providerName=consulcatalog
 ```
