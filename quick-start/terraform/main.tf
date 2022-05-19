@@ -21,8 +21,8 @@ locals {
   spin_version     = "v0.2.0"
   spin_checksum    = "f5c25a7f754ef46dfc4b2361d6f34d40564768a60d7bc0d183dc26fe1bdcfae0"
 
-  hippo_version    = "v0.9.0"
-  hippo_checksum   = "282e1111310089e1f84771555337bbe76a5e791d8f453e0600b904f30cbd17e3"
+  hippo_version    = "v0.9.1"
+  hippo_checksum   = "a31f752a805032411b0c2b26829eba881897d0535f7377ecc74a7ce7503618fb"
 }
 
 # -----------------------------------------------------------------------------

@@ -45,8 +45,9 @@ terraform destroy
 # SSH into EC2 instance
 
 ```console
-terraform output -raw ec2_ssh_private_key > ec2_ssh_private_key.pem
-ssh -i ec2_ssh_private_key.pem ubuntu@$(terraform output -raw eip_public_ip_address)
+terraform output -raw ec2_ssh_private_key > /tmp/ec2_ssh_private_key.pem
+chmod 0600 /tmp/ec2_ssh_private_key.pem
+ssh -i /tmp/ec2_ssh_private_key.pem ubuntu@$(terraform output -raw eip_public_ip_address)
 ```
 
 # Troubleshooting/Debugging
