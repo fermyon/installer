@@ -17,7 +17,7 @@
 # Resources deployed
 
 This example creates the following resources in the provided AWS account:
-  - 1 EC2 instance (default size: `t2.micro`)
+  - 1 EC2 instance (default size: `t2.small`)
   - 1 Elastic IP address (associated with instance)
     - This is useful as it won't change with instance reboots and is a known
       value for constructing Hippo and Bindle URLs

@@ -76,6 +76,9 @@ job "hippo" {
 
         Bindle__Url = var.bindle_url
 
+        Nomad__Traefik__Entrypoint   = "websecure"
+        Nomad__Traefik__CertResolver = "letsencrypt-tls-${var.letsencrypt_env}"
+
         Jwt__Key      = "ceci n'est pas une jeton"
         Jwt__Issuer   = "localhost"
         Jwt__Audience = "localhost"

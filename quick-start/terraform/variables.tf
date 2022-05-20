@@ -5,9 +5,9 @@ variable "instance_name" {
 }
 
 variable "instance_type" {
-  description = "The type of EC2 Instance to run for each node in the cluster (e.g. t2.micro)"
+  description = "The type of EC2 Instance to run for each node in the cluster (Default: t2.small)"
   type        = string
-  default     = "t2.micro"
+  default     = "t2.small"
 }
 
 variable "letsencrypt_env" {
