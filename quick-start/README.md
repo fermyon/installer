@@ -1,5 +1,20 @@
 # Nomad on AWS - Quick Start
 
+This is a Quick Start example to deploy Nomad and Fermyon Platform on AWS
+using Terraform.
+
+As such, this is intended solely for evaluation and/or demo scenarios, i.e.
+*not* for production.
+
+All Hashistack (Nomad, Consul, Vault), Traefik and Fermyon Platform processes run
+without any redundancy on a single EC2 instance. There is no data backup for any
+service.
+
+That being said, it should give users a quick look and feel for deploying apps
+onto the Fermyon Platform. Apps will by default be provided with TLS certs via
+Traefik's Let's Encrypt integration and will be accessible to the broader internet
+(depending on configuration details mentioned below).
+
 # Prerequisites
 
 - An AWS account
