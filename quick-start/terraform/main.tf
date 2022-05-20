@@ -46,74 +46,11 @@ data "aws_ami" "ubuntu" {
 }
 
 # -----------------------------------------------------------------------------
-# VPC and Networking
+# Default VPC
 # -----------------------------------------------------------------------------
 
-# TODO: (vdice) I honestly can't tell if all this malarkey is any better than just
-# launching the instance in the stock vpc (w/ public ip) and associated eip
-#
-# Here's another guide with even more complication:
-# https://dev.to/rhuaridh/terraform-place-your-ec2-instance-in-a-private-subnet-51eh
-#
-# I suppose there may be benefits of creating all of these as standalong resources
-# rather than using the defaults in a given account, but if the overhead of grok-ing
-# this is high -- and there's no real discernible security improvements -- then
-# perhaps we should remove.
-
-resource "aws_vpc" "default" {
-  cidr_block           = var.vpc_cidr_block
-  enable_dns_hostnames = true
-
-  tags = {
-    Name = "${var.instance_name}-vpc"
-  }
-}
-
-resource "aws_internet_gateway" "gw" {
-  vpc_id = aws_vpc.default.id
-}
-
-resource "aws_subnet" "default" {
-  vpc_id                  = aws_vpc.default.id
-  cidr_block              = var.subnet_cidr_block
-  map_public_ip_on_launch = true
-
-  tags = {
-    Name = "${var.instance_name}-subnet"
-  }
-
-  depends_on = [aws_internet_gateway.gw]
-}
-
-resource "aws_route_table" "public" {
-  vpc_id = aws_vpc.default.id
-
-  dynamic "route" {
-    for_each = var.allowed_inbound_cidr_blocks
-    content {
-      cidr_block = route.value
-      gateway_id = aws_internet_gateway.gw.id
-    }
-  }
-
-  tags = {
-    Name = "${var.instance_name}-vpc-route-table"
-  }
-}
-
-resource "aws_route_table_association" "public"{
-  subnet_id = "${aws_subnet.default.id}"
-  route_table_id = "${aws_route_table.public.id}"
-}
-
-resource "aws_network_interface" "default" {
-  subnet_id   = aws_subnet.default.id
-  private_ips = [var.private_ip_address]
-  security_groups = [aws_security_group.ec2.id]
-
-  tags = {
-    Name = "${var.instance_name}-network-interface"
-  }
+data "aws_vpc" "default" {
+  default = true
 }
 
 # -----------------------------------------------------------------------------
@@ -122,19 +59,16 @@ resource "aws_network_interface" "default" {
 # -----------------------------------------------------------------------------
 
 resource "aws_eip" "lb" {
-  vpc      = true
+  vpc = true
 
   tags = {
     Name = "${var.instance_name}-eip"
   }
-
-  depends_on = [aws_internet_gateway.gw]
 }
 
 resource "aws_eip_association" "lb" {
   instance_id   = aws_instance.ec2.id
   allocation_id = aws_eip.lb.id
-  private_ip_address = var.private_ip_address
 
   depends_on = [
     aws_eip.lb,
@@ -150,11 +84,6 @@ resource "aws_instance" "ec2" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = var.instance_type
   key_name      = aws_key_pair.ec2_ssh_key_pair.key_name
-
-  network_interface {
-    network_interface_id = aws_network_interface.default.id
-    device_index         = 0
-  }
 
   provisioner "file" {
     source      = "${path.module}/ec2_assets/"
@@ -189,6 +118,8 @@ resource "aws_instance" "ec2" {
     }
   )
 
+  vpc_security_group_ids = [aws_security_group.ec2.id]
+
   tags = {
     Name = var.instance_name
   }
@@ -198,12 +129,9 @@ resource "aws_instance" "ec2" {
 # Security group/rules to specify allowed inbound/outbound addresses/ports
 # -----------------------------------------------------------------------------
 
-# TODO: Add ports for:
-#       - Hashistack APIs/dashboards?
-
 resource "aws_security_group" "ec2" {
   name_prefix = var.instance_name
-  vpc_id      = aws_vpc.default.id
+  vpc_id      = data.aws_vpc.default.id
 
   tags = {
     Name = "${var.instance_name}-security-group"

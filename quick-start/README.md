@@ -36,14 +36,10 @@ This example creates the following resources in the provided AWS account:
   - 1 Elastic IP address (associated with instance)
     - This is useful as it won't change with instance reboots and is a known
       value for constructing Hippo and Bindle URLs
-  - 1 VPC to host the EC2 instance, using a private IP address range
-    - 1 subnet
-    - 1 network interface
-    - 1 custom security group with
-      - Inbound connections allowed for ports 22, 80 and 443
-        - see `var.allowed_inbound_cidr_blocks` for allowed origin IP addresses
-      - All outbound connections allowed
-    - 1 internet gateway and route table for connection to the broader internet
+  - 1 custom security group using the default VPC with:
+    - Inbound connections allowed for ports 22, 80 and 443
+      - see `var.allowed_inbound_cidr_blocks` for allowed origin IP addresses
+    - All outbound connections allowed
   - 1 SSH keypair
     - see `var.allowed_ssh_cidr_blocks` for allowed origin IP addresses
 
