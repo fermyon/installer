@@ -154,3 +154,28 @@ time="2022-05-18T23:42:32Z" level=info msg="Configuration loaded from file: /hom
 time="2022-05-18T23:42:32Z" level=info msg="Traefik version 2.6.6 built on 2022-05-03T16:58:48Z"
 ...
 ```
+
+## Advanced: Accessing Nomad and/or Consul from outside of the EC2 instance
+
+You may wish to access the Nomad and/or Consul APIs from outside of the EC2 instance.
+
+Note, however, that these currently run on unsecured http ports, therefore it is
+highly encouraged to minimally update the terraform deploy to restrict inbound IP addresses
+(`var.allowed_inbound_cidr_blocks`). Otherwise, The Entire Internet will have access
+to the Nomad and Consul instances.
+
+### Open up the Nomad http port
+
+This will allow traffic to the `4646` port at the public Elastic IP address:
+
+```console
+terraform apply -var='allow_inbound_http_nomad=true'
+```
+
+### Open up the Consul http port
+
+This will allow traffic to the `8500` port at the public Elastic IP address:
+
+```console
+terraform apply -var='allow_inbound_http_consul=true'
+```

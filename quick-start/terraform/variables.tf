@@ -60,3 +60,15 @@ variable "private_ip_address" {
   # https://stackoverflow.com/questions/64212709/how-do-i-assign-an-ec2-instance-to-a-fixed-ip-address-within-a-subnet
   default     = "10.0.0.4"
 }
+
+variable "allow_inbound_http_nomad" {
+  description = "Allow inbound connections to the unsecured Nomad API http port"
+  type        = bool
+  default     = false
+}
+
+variable "allow_inbound_http_consul" {
+  description = "Allow inbound connections to the unsecured Consul API http port"
+  type        = bool
+  default     = false
+}
