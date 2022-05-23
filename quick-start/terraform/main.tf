@@ -3,8 +3,8 @@
 # -----------------------------------------------------------------------------
 
 locals {
-  nomad_version    = "1.3.0"
-  nomad_checksum   = "df1f52054a3aaf6db2a564a1bad8bc80902e71746771fe3db18ed4c85cf2c2b1"
+  nomad_version    = "1.3.1"
+  nomad_checksum   = "d16dcea9fdfab3846e749307e117e33a07f0d8678cf28cc088637055e34e5b37"
 
   consul_version   = "1.12.0"
   consul_checksum  = "109e2077236cae4560b2fa3dce7974ef58d6a7093d72494614d875e5c86e3b2c"
