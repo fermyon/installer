@@ -22,7 +22,7 @@ Traefik's Let's Encrypt integration and will be accessible to the broader intern
     ```console
       export AWS_ACCESS_KEY_ID=xxx
       export AWS_SECRET_ACCESS_KEY=xxx
-      export AWS_DEFAULT_REGION=us-east-1
+      export AWS_REGION=us-east-1
     ```
   - Or via local [aws CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
     configuration (see `~/.aws/config` and `~/.aws/credentials`)
@@ -60,6 +60,13 @@ the broader internet - this value may be updated on a subsequent `terraform appl
 `terraform apply -var=allowed_inbound_cidr_blocks=["75.75.75.75/32"]`.
 
 # How to Deploy
+
+First, navigate to the `terraform` directory and initialize Terraform:
+
+```console
+cd terraform
+terraform init
+```
 
 Deploy with all defaults and using the Let's Encrypt staging URL for testing:
 
