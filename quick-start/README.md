@@ -93,8 +93,53 @@ terraform destroy
 Once this example has been deployed, you're ready to start building and deploying applications
 on the Fermyon Platform.
 
-Follow the [Spin documentation](https://spin.fermyon.dev/) or
+For in-depth guides, follow the [Spin documentation](https://spin.fermyon.dev/) or
 [Hippo documentation](https://docs.hippofactory.dev/) to get started.
+
+## Example flow
+
+Here's an example flow once `terraform apply` completes.
+
+First, export pertinent environment variables based on terraform output values:
+
+```console
+export DNS_DOMAIN=$(terraform output -raw eip_public_ip_address).$(terraform output -raw dns_host)
+export HIPPO_URL=$(terraform output -raw hippo_url)
+export HIPPO_USERNAME=$(terraform output -raw hippo_admin_username)
+export HIPPO_PASSWORD=$(terraform output -raw hippo_admin_password)
+export BINDLE_URL=$(terraform output -raw bindle_url)
+```
+
+Next, `cd` to your Spin app directory, login to Hippo and deploy your app.
+
+Here we've entered the [examples/http-rust](https://github.com/fermyon/spin/tree/main/examples/http-rust)
+directory in the [fermyon/spin](https://github.com/fermyon/spin) GitHub repository:
+
+```console
+$ cd ~/code/github.com/fermyon/spin/examples/http-rust
+
+$ hippo login
+Logged in as admin
+
+$ spin build
+<output omitted>
+
+$ spin deploy
+Successfully deployed application!
+```
+
+We can then hit our app's served route (`/hello`) via its https URL.
+
+```console
+$ curl https://spin-hello-world.spin-hello-world.hippo.${DNS_DOMAIN}/hello
+Hello, Fermyon!
+```
+
+A few notes:
+
+- It can take a few moments for Traefik to obtain the Let's Encrypt cert for the app domain
+- The current structure for an app's URL on Hippo is `https://<channel name>.<app name>.hippo.<domain>`.
+  When deploying with `spin deploy`, the app name is used for the hippo channel name as well.
 
 # Troubleshooting/Debugging
 

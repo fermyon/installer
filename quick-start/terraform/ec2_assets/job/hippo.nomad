@@ -21,6 +21,29 @@ variable "letsencrypt_env" {
   }
 }
 
+variable "registration_mode" {
+  type    = string
+  default = "AdministratorOnly"
+  description = "The Hippo registration mode. Options are 'Open', 'Closed' and 'AdministratorOnly'. (Default: AdministratorOnly)"
+
+  validation {
+    condition     = var.registration_mode == "Open" || var.registration_mode == "Closed" || var.registration_mode == "AdministratorOnly"
+    error_message = "The Hippo registration mode must be 'Open', 'Closed' or 'AdministratorOnly'."
+  }
+}
+
+variable "admin_username" {
+  type        = string
+  description = "Username for the admin account"
+  default     = null
+}
+
+variable "admin_password" {
+  type        = string
+  description = "Password for the admin account"
+  default     = null
+}
+
 job "hippo" {
   datacenters = ["dc1"]
   type        = "service"
@@ -64,8 +87,16 @@ job "hippo" {
       driver = "raw_exec"
 
       env {
+        # Enable for debug logging
+        # Logging__LogLevel__Default = "Debug"
+
         Hippo__PlatformDomain = var.domain
         Scheduler__Driver     = "nomad"
+
+        # Registration configuration
+        Hippo__RegistrationMode            = var.registration_mode
+        Hippo__Administrators__0__Username = var.registration_mode == "AdministratorOnly" ? var.admin_username : ""
+        Hippo__Administrators__0__Password = var.registration_mode == "AdministratorOnly" ? var.admin_password : ""
 
         # Database Driver: inmemory, sqlite, postgresql
         Database__Driver            = "sqlite"

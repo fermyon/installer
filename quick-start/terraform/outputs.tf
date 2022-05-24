@@ -14,6 +14,11 @@ output "eip_public_ip_address" {
   value       = aws_eip.lb.public_ip
 }
 
+output "dns_host" {
+  description = "The DNS host to use for construction of the root domain for Fermyon Platform services and apps"
+  value       = var.dns_host
+}
+
 output "bindle_url" {
   description = "The URL for the Bindle server"
   value       = "https://bindle.${aws_eip.lb.public_ip}.${var.dns_host}/v1"
@@ -22,4 +27,15 @@ output "bindle_url" {
 output "hippo_url" {
   description = "The URL for the Hippo server"
   value       = "https://hippo.${aws_eip.lb.public_ip}.${var.dns_host}"
+}
+
+output "hippo_admin_username" {
+  description = "Admin username for Hippo when running in AdministratorOnly mode"
+  value       = var.hippo_admin_username
+}
+
+output "hippo_admin_password" {
+  description = "Admin password for Hippo when running in AdministratorOnly mode"
+  value       = random_password.hippo_admin_password.result
+  sensitive   = true
 }

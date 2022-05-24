@@ -21,8 +21,8 @@ locals {
   spin_version     = "v0.2.0"
   spin_checksum    = "f5c25a7f754ef46dfc4b2361d6f34d40564768a60d7bc0d183dc26fe1bdcfae0"
 
-  hippo_version    = "v0.11.0"
-  hippo_checksum   = "d195fac576efe656e69678f5f78b2aa8fdb944f930b812532664aa042cd6df00"
+  hippo_version    = "v0.12.0"
+  hippo_checksum   = "a7f5f7c5cf58c951f1d88a64bc73f4361da5f3c1462317f9b45b3520575a9b16"
 }
 
 # -----------------------------------------------------------------------------
@@ -85,6 +85,7 @@ resource "aws_instance" "ec2" {
   instance_type = var.instance_type
   key_name      = aws_key_pair.ec2_ssh_key_pair.key_name
 
+  # Add config files, scripts, Nomad jobs to host
   provisioner "file" {
     source      = "${path.module}/ec2_assets/"
     destination = "/home/ubuntu"
@@ -99,22 +100,35 @@ resource "aws_instance" "ec2" {
 
   user_data = templatefile("${path.module}/scripts/user-data.sh",
     {
-      dns_zone         = "${aws_eip.lb.public_ip}.${var.dns_host}",
-      letsencrypt_env  = var.letsencrypt_env,
-      nomad_version    = local.nomad_version,
-      nomad_checksum   = local.nomad_checksum,
-      consul_version   = local.consul_version,
-      consul_checksum  = local.consul_checksum,
-      vault_version    = local.vault_version,
-      vault_checksum   = local.vault_checksum,
-      traefik_version  = local.traefik_version,
-      traefik_checksum = local.traefik_checksum,
-      bindle_version   = local.bindle_version,
-      bindle_checksum  = local.bindle_checksum,
-      spin_version     = local.spin_version,
-      spin_checksum    = local.spin_checksum,
-      hippo_version    = local.hippo_version,
-      hippo_checksum   = local.hippo_checksum,
+      dns_zone                = "${aws_eip.lb.public_ip}.${var.dns_host}",
+      letsencrypt_env         = var.letsencrypt_env,
+
+      nomad_version           = local.nomad_version,
+      nomad_checksum          = local.nomad_checksum,
+
+      consul_version          = local.consul_version,
+      consul_checksum         = local.consul_checksum,
+
+      vault_version           = local.vault_version,
+      vault_checksum          = local.vault_checksum,
+
+      traefik_version         = local.traefik_version,
+      traefik_checksum        = local.traefik_checksum,
+
+      bindle_version          = local.bindle_version,
+      bindle_checksum         = local.bindle_checksum,
+
+      spin_version            = local.spin_version,
+      spin_checksum           = local.spin_checksum,
+
+      hippo_version           = local.hippo_version,
+      hippo_checksum          = local.hippo_checksum,
+      hippo_registration_mode = var.hippo_registration_mode
+      hippo_admin_username    = var.hippo_admin_username
+      # TODO: ideally, Hippo will support ingestion of the admin password via
+      # its hash (eg bcrypt, which Traefik and Bindle both support) - then we can remove
+      # the need to pass the raw value downstream to the scripts, Nomad job, ecc.
+      hippo_admin_password    = random_password.hippo_admin_password.result,
     }
   )
 
@@ -219,4 +233,13 @@ resource "tls_private_key" "ec2_ssh_key" {
 resource "aws_key_pair" "ec2_ssh_key_pair" {
   key_name   = "${var.instance_name}_ssh_key_pair"
   public_key = tls_private_key.ec2_ssh_key.public_key_openssh
+}
+
+# -----------------------------------------------------------------------------
+# Hippo admin password
+# -----------------------------------------------------------------------------
+
+resource "random_password" "hippo_admin_password" {
+  length           = 22
+  special          = true
 }

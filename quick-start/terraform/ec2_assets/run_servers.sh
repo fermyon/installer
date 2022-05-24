@@ -23,7 +23,7 @@ require bindle-server
 
 cleanup() {
   echo
-  echo "Sutting down services"
+  echo "Shutting down services"
   kill $(jobs -p)
   wait
 }
@@ -89,6 +89,9 @@ nomad run \
 echo "Starting hippo job..."
 nomad run \
   -var domain="hippo.${DNS_ZONE}" \
+  -var registration_mode="${HIPPO_REGISTRATION_MODE}" \
+  -var admin_username="${HIPPO_ADMIN_USERNAME}" \
+  -var admin_password="${HIPPO_ADMIN_PASSWORD}" \
   -var bindle_url="https://bindle.${DNS_ZONE}/v1" \
   -var letsencrypt_env="${LETSENCRYPT_ENV}" \
   job/hippo.nomad

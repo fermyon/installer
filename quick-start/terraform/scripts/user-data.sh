@@ -100,8 +100,12 @@ sudo tar zxvf hippo-server-linux-x64.tar.gz -C /home/ubuntu/hippo
 cd /home/ubuntu
 sudo chmod +x run_servers.sh
 
-export DNS_ZONE="${dns_zone}"
-export LETSENCRYPT_ENV="${letsencrypt_env}"
+export HIPPO_ADMIN_USERNAME='${hippo_admin_username}'
+export HIPPO_ADMIN_PASSWORD='${hippo_admin_password}'
+export HIPPO_REGISTRATION_MODE='${hippo_registration_mode}'
+
+export DNS_ZONE='${dns_zone}'
+export LETSENCRYPT_ENV='${letsencrypt_env}'
 
 echo "Running servers using DNS zone '$DNS_ZONE' and Let's Encrypt env '$LETSENCRYPT_ENV'"
 ./run_servers.sh
