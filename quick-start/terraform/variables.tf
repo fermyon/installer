@@ -51,3 +51,9 @@ variable "allow_inbound_http_consul" {
   type        = bool
   default     = false
 }
+
+variable "basic_auth_username" {
+  description = "Basic auth username for authenticating with Bindle and Hippo"
+  type        = string
+  default     = "admin"
+}

@@ -21,6 +21,11 @@ variable "letsencrypt_env" {
   }
 }
 
+variable "basic_auth" {
+  type        = string
+  description = "Basic auth username and password for authenticating with Hippo, eg user:<bcrypt_hash_of_password>"
+}
+
 job "hippo" {
   datacenters = ["dc1"]
   type        = "service"
@@ -50,6 +55,8 @@ job "hippo" {
         "traefik.http.routers.hippo.tls=true",
         "traefik.http.routers.hippo.tls.certresolver=letsencrypt-tls-${var.letsencrypt_env}",
         "traefik.http.routers.hippo.tls.domains[0].main=${var.domain}",
+        "traefik.http.routers.hippo.middlewares=basic-auth",
+        "traefik.http.middlewares.basic-auth.basicauth.users=${var.basic_auth}",
       ]
 
       check {

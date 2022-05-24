@@ -83,12 +83,14 @@ nomad run job/traefik.nomad
 echo "Starting bindle job..."
 nomad run \
   -var domain="bindle.${DNS_ZONE}" \
+  -var basic_auth="${BASIC_AUTH}" \
   -var letsencrypt_env="${LETSENCRYPT_ENV}" \
   job/bindle.nomad
 
 echo "Starting hippo job..."
 nomad run \
   -var domain="hippo.${DNS_ZONE}" \
+  -var basic_auth="${BASIC_AUTH}" \
   -var bindle_url="https://bindle.${DNS_ZONE}/v1" \
   -var letsencrypt_env="${LETSENCRYPT_ENV}" \
   job/hippo.nomad

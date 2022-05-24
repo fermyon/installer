@@ -100,6 +100,10 @@ sudo tar zxvf hippo-server-linux-x64.tar.gz -C /home/ubuntu/hippo
 cd /home/ubuntu
 sudo chmod +x run_servers.sh
 
+# Note: the basic_auth string will have '$' chars courtesy the bcrypt hashing of
+# the password component, so we wrap in single quotes to avoid triggering the
+# undefined variable bash check
+export BASIC_AUTH='${basic_auth}'
 export DNS_ZONE="${dns_zone}"
 export LETSENCRYPT_ENV="${letsencrypt_env}"
 

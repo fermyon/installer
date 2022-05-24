@@ -15,6 +15,11 @@ variable "letsencrypt_env" {
   }
 }
 
+variable "basic_auth" {
+  type        = string
+  description = "Basic auth username and password for authenticating with Bindle, eg user:<bcrypt_hash_of_password>"
+}
+
 job "bindle" {
   datacenters = ["dc1"]
   type        = "service"
@@ -37,6 +42,8 @@ job "bindle" {
         "traefik.http.routers.bindle.tls=true",
         "traefik.http.routers.bindle.tls.certresolver=letsencrypt-tls-${var.letsencrypt_env}",
         "traefik.http.routers.bindle.tls.domains[0].main=${var.domain}",
+        "traefik.http.routers.bindle.middlewares=basic-auth",
+        "traefik.http.middlewares.basic-auth.basicauth.users=${var.basic_auth}",
       ]
 
       check {

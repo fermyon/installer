@@ -23,3 +23,14 @@ output "hippo_url" {
   description = "The URL for the Hippo server"
   value       = "https://hippo.${aws_eip.lb.public_ip}.${var.dns_host}"
 }
+
+output "basic_auth_username" {
+  description = "Basic auth username for authenticating with Bindle and Hippo"
+  value       = var.basic_auth_username
+}
+
+output "basic_auth_password" {
+  description = "Basic auth password for authenticating with Bindle and Hippo"
+  value       = random_password.basic_auth_password
+  sensitive   = true
+}
