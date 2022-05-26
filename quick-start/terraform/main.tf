@@ -6,14 +6,14 @@ locals {
   nomad_version    = "1.3.1"
   nomad_checksum   = "d16dcea9fdfab3846e749307e117e33a07f0d8678cf28cc088637055e34e5b37"
 
-  consul_version   = "1.12.0"
-  consul_checksum  = "109e2077236cae4560b2fa3dce7974ef58d6a7093d72494614d875e5c86e3b2c"
+  consul_version   = "1.12.1"
+  consul_checksum  = "8d138267701fc3502dc6b01beb08ae8fac969022ab867f61bc945af38686ecc3"
 
   vault_version    = "1.10.3"
   vault_checksum   = "c99aeefd30dbeb406bfbd7c80171242860747b3bf9fa377e7a9ec38531727f31"
 
-  traefik_version  = "v2.6.6"
-  traefik_checksum = "cf4afc3f4bff687fccf85cce1cb0f46b40c9f81c2637580eda189abfee0cf55b"
+  traefik_version  = "v2.7.0"
+  traefik_checksum = "348e444c390156a3d17613e421ec80e23874e2388ef0cc22d7ad00a5b9c7f21a"
 
   bindle_version   = "v0.8.0"
   bindle_checksum  = "26f68ab5a03c7e6f0c8b83fb199ca77244c834f25247b9a62312eb7a89dba93c"
