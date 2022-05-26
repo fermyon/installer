@@ -100,23 +100,29 @@ resource "aws_instance" "ec2" {
 
   user_data = templatefile("${path.module}/scripts/user-data.sh",
     {
-      dns_zone            = "${aws_eip.lb.public_ip}.${var.dns_host}",
-      letsencrypt_env     = var.letsencrypt_env,
-      basic_auth          = "${var.basic_auth_username}:${random_password.basic_auth_password.bcrypt_hash}",
-      nomad_version       = local.nomad_version,
-      nomad_checksum      = local.nomad_checksum,
-      consul_version      = local.consul_version,
-      consul_checksum     = local.consul_checksum,
-      vault_version       = local.vault_version,
-      vault_checksum      = local.vault_checksum,
-      traefik_version     = local.traefik_version,
-      traefik_checksum    = local.traefik_checksum,
-      bindle_version      = local.bindle_version,
-      bindle_checksum     = local.bindle_checksum,
-      spin_version        = local.spin_version,
-      spin_checksum       = local.spin_checksum,
-      hippo_version       = local.hippo_version,
-      hippo_checksum      = local.hippo_checksum,
+      dns_zone                = "${aws_eip.lb.public_ip}.${var.dns_host}",
+      letsencrypt_env         = var.letsencrypt_env,
+      basic_auth_username     = var.basic_auth_username
+      # TODO: ideally, Hippo will support ingestion of the admin password via
+      # its bcrypt hash (similar to how Traefik/Bindle does) - then we can remove
+      # the need to pass the raw value downstream to the scripts, Nomad job, ecc.
+      basic_auth_password     = random_password.basic_auth_password.result,
+      basic_auth              = "${var.basic_auth_username}:${random_password.basic_auth_password.bcrypt_hash}",
+      nomad_version           = local.nomad_version,
+      nomad_checksum          = local.nomad_checksum,
+      consul_version          = local.consul_version,
+      consul_checksum         = local.consul_checksum,
+      vault_version           = local.vault_version,
+      vault_checksum          = local.vault_checksum,
+      traefik_version         = local.traefik_version,
+      traefik_checksum        = local.traefik_checksum,
+      bindle_version          = local.bindle_version,
+      bindle_checksum         = local.bindle_checksum,
+      spin_version            = local.spin_version,
+      spin_checksum           = local.spin_checksum,
+      hippo_version           = local.hippo_version,
+      hippo_checksum          = local.hippo_checksum,
+      hippo_registration_mode = var.hippo_registration_mode
     }
   )
 

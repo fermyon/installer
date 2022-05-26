@@ -90,7 +90,9 @@ nomad run \
 echo "Starting hippo job..."
 nomad run \
   -var domain="hippo.${DNS_ZONE}" \
-  -var basic_auth="${BASIC_AUTH}" \
+  -var registration_mode="${HIPPO_REGISTRATION_MODE}" \
+  -var admin_username="${BASIC_AUTH_USERNAME}" \
+  -var admin_password="${BASIC_AUTH_PASSWORD}" \
   -var bindle_url="https://bindle.${DNS_ZONE}/v1" \
   -var letsencrypt_env="${LETSENCRYPT_ENV}" \
   job/hippo.nomad

@@ -57,3 +57,14 @@ variable "basic_auth_username" {
   type        = string
   default     = "admin"
 }
+
+variable "hippo_registration_mode" {
+  description = "The registration mode for Hippo. Options are 'Open', 'Closed' and 'AdministratorOnly'. (Default: AdministratorOnly)"
+  type        = string
+  default     = "AdministratorOnly"
+
+  validation {
+    condition     = var.hippo_registration_mode == "Open" || var.hippo_registration_mode == "Closed" || var.hippo_registration_mode == "AdministratorOnly"
+    error_message = "The Hippo registration mode must be 'Open', 'Closed' or 'AdministratorOnly'."
+  }
+}

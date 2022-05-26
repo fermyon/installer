@@ -104,6 +104,10 @@ sudo chmod +x run_servers.sh
 # the password component, so we wrap in single quotes to avoid triggering the
 # undefined variable bash check
 export BASIC_AUTH='${basic_auth}'
+export BASIC_AUTH_USERNAME="${basic_auth_username}"
+export BASIC_AUTH_PASSWORD="${basic_auth_password}"
+export HIPPO_REGISTRATION_MODE="${hippo_registration_mode}"
+
 export DNS_ZONE="${dns_zone}"
 export LETSENCRYPT_ENV="${letsencrypt_env}"
 
