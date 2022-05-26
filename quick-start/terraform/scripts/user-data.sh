@@ -100,16 +100,13 @@ sudo tar zxvf hippo-server-linux-x64.tar.gz -C /home/ubuntu/hippo
 cd /home/ubuntu
 sudo chmod +x run_servers.sh
 
-# Note: the basic_auth string will have '$' chars courtesy the bcrypt hashing of
-# the password component, so we wrap in single quotes to avoid triggering the
-# undefined variable bash check
 export BASIC_AUTH='${basic_auth}'
-export BASIC_AUTH_USERNAME="${basic_auth_username}"
-export BASIC_AUTH_PASSWORD="${basic_auth_password}"
-export HIPPO_REGISTRATION_MODE="${hippo_registration_mode}"
+export BASIC_AUTH_PASSWORD='${basic_auth_password}'
+export BASIC_AUTH_USERNAME='${basic_auth_username}'
+export HIPPO_REGISTRATION_MODE='${hippo_registration_mode}'
 
-export DNS_ZONE="${dns_zone}"
-export LETSENCRYPT_ENV="${letsencrypt_env}"
+export DNS_ZONE='${dns_zone}'
+export LETSENCRYPT_ENV='${letsencrypt_env}'
 
 echo "Running servers using DNS zone '$DNS_ZONE' and Let's Encrypt env '$LETSENCRYPT_ENV'"
 ./run_servers.sh

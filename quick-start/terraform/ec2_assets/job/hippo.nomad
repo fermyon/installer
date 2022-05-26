@@ -87,13 +87,15 @@ job "hippo" {
       driver = "raw_exec"
 
       env {
+        Logging__LogLevel__Hippo = "Debug"
+
         Hippo__PlatformDomain = var.domain
         Scheduler__Driver     = "nomad"
 
         # Registration configuration
-        Hippo__RegistrationMode            = var.administration_mode
-        Hippo__Administrators__0__Username = var.administration_mode == "AdministratorOnly" ? var.admin_username : ""
-        Hippo__Administrators__0__Password = var.administration_mode == "AdministratorOnly" ? var.admin_password : ""
+        Hippo__RegistrationMode            = var.registration_mode
+        Hippo__Administrators__0__Username = var.registration_mode == "AdministratorOnly" ? var.admin_username : ""
+        Hippo__Administrators__0__Password = var.registration_mode == "AdministratorOnly" ? var.admin_password : ""
 
         # Database Driver: inmemory, sqlite, postgresql
         Database__Driver            = "sqlite"

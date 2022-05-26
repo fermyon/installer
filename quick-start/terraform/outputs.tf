@@ -25,12 +25,12 @@ output "hippo_url" {
 }
 
 output "basic_auth_username" {
-  description = "Basic auth username for authenticating with Bindle and Hippo"
+  description = "Username for authenticating with Bindle (basic auth) and Hippo (admin account)"
   value       = var.basic_auth_username
 }
 
 output "basic_auth_password" {
-  description = "Basic auth password for authenticating with Bindle and Hippo"
-  value       = random_password.basic_auth_password
+  description = "Password for authenticating with Bindle (basic auth) and Hippo (admin account)"
+  value       = random_password.basic_auth_password.result
   sensitive   = true
 }
