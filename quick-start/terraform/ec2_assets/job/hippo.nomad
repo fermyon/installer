@@ -73,8 +73,6 @@ job "hippo" {
         "traefik.http.routers.hippo.tls=true",
         "traefik.http.routers.hippo.tls.certresolver=letsencrypt-tls-${var.letsencrypt_env}",
         "traefik.http.routers.hippo.tls.domains[0].main=${var.domain}",
-        "traefik.http.routers.hippo.middlewares=basic-auth",
-        "traefik.http.middlewares.basic-auth.basicauth.users=${var.basic_auth}",
       ]
 
       check {
