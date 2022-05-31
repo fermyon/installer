@@ -27,6 +27,10 @@ Traefik's Let's Encrypt integration and will be accessible to the broader intern
   - Or via local [aws CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
     configuration (see `~/.aws/config` and `~/.aws/credentials`)
 
+  - _Note: If your AWS user is in a group that enforces MFA for all requests,
+    see the following guide on [generating a session token](#generating-a-session-token-in-aws)
+    prior to running this automation._
+
 - The [terraform CLI](https://learn.hashicorp.com/tutorials/terraform/install-cli#install-terraform)
 
 # Resources deployed
@@ -196,4 +200,42 @@ This will allow traffic to the `8500` port at the public Elastic IP address:
 
 ```console
 terraform apply -var='allow_inbound_http_consul=true'
+```
+
+## Generating a session token in AWS
+
+If your AWS user is associated with an MFA-only policy, you'll most likely need
+to generate a temporary set of credentials prior to running this automation.
+
+Here's an example that invokes the `aws sts get-session-token` command while
+supplying the ARN of the MFA device associated with the user account, as well
+as a current token from this device. (Note: `aws iam list-mfa-devices` can be
+invoked to find the corresponding device ARN.)
+
+The command will return JSON which can be saved to a local file. A tool like
+[jq](https://stedolan.github.io/jq/) can then be used to parse the JSON and load
+values into their respective environment variables.
+
+By default, the credentials are valid for 12 hours. See the
+[AWS documentation](https://aws.amazon.com/premiumsupport/knowledge-center/authenticate-mfa-cli/)
+for further details.
+
+```console
+$ aws sts get-session-token \
+  --serial-number <arn of the mfa device> \
+  --token-code <code from token> > session-token.json
+
+$ cat session-token.json | jq
+{
+  "Credentials": {
+    "AccessKeyId": "xxx",
+    "SecretAccessKey": "xxx",
+    "SessionToken": "xxx",
+    "Expiration": "2022-05-26T05:52:56+00:00"
+  }
+}
+
+$ export AWS_ACCESS_KEY_ID="$(cat session-token.json | jq -j '.Credentials.AccessKeyId')"
+$ export AWS_SECRET_ACCESS_KEY="$(cat session-token.json | jq -j '.Credentials.SecretAccessKey')"
+$ export AWS_SESSION_TOKEN="$(cat session-token.json | jq -j '.Credentials.SessionToken')"
 ```
