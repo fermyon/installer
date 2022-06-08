@@ -154,7 +154,7 @@ For example, when using the default DNS host of `sslip.io`, hitting the endpoint
 the following:
 
 ```console
-$ curl https://spin-hello-world.spin-hello-world.hippo.52.44.146.193.sslip.io/hello
+$ curl https://spin-deploy.spin-hello-world.hippo.52.44.146.193.sslip.io/hello
 Hello, Fermyon!
 ```
 
