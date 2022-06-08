@@ -105,7 +105,7 @@ job "hippo" {
         # Database__Driver            = "postgresql"
         # ConnectionStrings__Database = "Host=localhost;Username=postgres;Password=postgres;Database=hippo"
 
-        Bindle__Url = var.bindle_url
+        ConnectionStrings__Bindle     = "server=${var.bindle_url};sslmode=disable"
 
         Nomad__Traefik__Entrypoint   = "websecure"
         Nomad__Traefik__CertResolver = "letsencrypt-tls-${var.letsencrypt_env}"
