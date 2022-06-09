@@ -55,7 +55,7 @@ data "aws_vpc" "default" {
 
 # -----------------------------------------------------------------------------
 # Elastic IP to persist through instance restarts and serve as a known value
-# for filling out DNS via chosen host, eg 44.194.137.14.sslip.io
+# for filling out DNS via chosen host, eg 44.194.137.14
 # -----------------------------------------------------------------------------
 
 resource "aws_eip" "lb" {
@@ -100,7 +100,7 @@ resource "aws_instance" "ec2" {
 
   user_data = templatefile("${path.module}/scripts/user-data.sh",
     {
-      dns_zone                = "${aws_eip.lb.public_ip}.${var.dns_host}",
+      dns_zone                = var.dns_host == "sslip.io" ? "${aws_eip.lb.public_ip}.${var.dns_host}" : "${var.dns_host}",
       letsencrypt_env         = var.letsencrypt_env,
 
       nomad_version           = local.nomad_version,

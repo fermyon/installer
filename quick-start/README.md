@@ -86,7 +86,15 @@ Deploy with a custom instance name, perhaps so multiple examples can co-exist in
 terraform apply -var='instance_name=fermyonrocks'
 ```
 
-Conversely, when all wrapped up, resources can be destroyed via:
+Deploy with a custom domain name:
+
+```console
+terraform apply -var='dns_host=example.com'
+```
+
+Quick disclaimer with `letsencrypt_env=prod`: if the DNS record does not propagate in time, Let's Encrypt may incur a rate limit on your domain. Create the A record for *.example.com as soon as you can, making sure it points to the Elastic IP's public address. See https://letsencrypt.org/docs/staging-environment/#rate-limits for more details.
+
+When all wrapped up, resources can be destroyed via:
 
 ```console
 terraform destroy
@@ -107,7 +115,8 @@ Here's an example flow once `terraform apply` completes.
 First, export pertinent environment variables based on terraform output values:
 
 ```console
-export DNS_DOMAIN=$(terraform output -raw eip_public_ip_address).$(terraform output -raw dns_host)
+export ELASTIC_IP_ADDRESS=$(terraform output -raw eip_public_ip_address)
+export DNS_DOMAIN=$(terraform output -raw dns_host)
 export HIPPO_URL=$(terraform output -raw hippo_url)
 export HIPPO_USERNAME=$(terraform output -raw hippo_admin_username)
 export HIPPO_PASSWORD=$(terraform output -raw hippo_admin_password)
