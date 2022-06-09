@@ -107,7 +107,8 @@ Here's an example flow once `terraform apply` completes.
 First, export pertinent environment variables based on terraform output values:
 
 ```console
-export DNS_DOMAIN=$(terraform output -raw eip_public_ip_address).$(terraform output -raw dns_host)
+export ELASTIC_IP_ADDRESS=$(terraform output -raw eip_public_ip_address)
+export DNS_DOMAIN=$(terraform output -raw dns_host)
 export HIPPO_URL=$(terraform output -raw hippo_url)
 export HIPPO_USERNAME=$(terraform output -raw hippo_admin_username)
 export HIPPO_PASSWORD=$(terraform output -raw hippo_admin_password)
