@@ -10,10 +10,10 @@ variable "instance_type" {
   default     = "t2.small"
 }
 
-variable "letsencrypt_env" {
-  description = "The Let's Encrypt URL to request certs from. Options are 'staging' or 'prod'."
-  type        = string
-  default     = "staging"
+variable "enable_letsencrypt" {
+  description = "Enable cert provisioning via Let's Encrypt"
+  type        = bool
+  default     = false
 }
 
 variable "dns_host" {

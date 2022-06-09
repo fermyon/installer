@@ -11,7 +11,7 @@ without any redundancy on a single EC2 instance. There is no data backup for any
 service.
 
 That being said, it should give users a quick look and feel for deploying apps
-onto the Fermyon Platform. Apps will by default be provided with TLS certs via
+using Fermyon. Apps will by default be provided with TLS certs via
 Traefik's Let's Encrypt integration and will be accessible to the broader internet
 (depending on configuration details mentioned below).
 
@@ -68,16 +68,16 @@ cd terraform
 terraform init
 ```
 
-Deploy with all defaults and using the Let's Encrypt staging URL for testing:
+Deploy with all defaults (http-based URLs):
 
 ```console
 terraform apply
 ```
 
-Deploy with all defaults and using the Let's Encrypt prod URL for happy TLS:
+Deploy with all defaults and use Let's Encrypt to provision certs for TLS/https:
 
 ```console
-terraform apply -var='letsencrypt_env=prod'
+terraform apply -var='enable_letsencrypt=true'
 ```
 
 Deploy with a custom instance name, perhaps so multiple examples can co-exist in the same region:
@@ -126,9 +126,7 @@ commands below:
   - `HIPPO_URL`
   - `BINDLE_URL`
 
-Next, `cd` to your Spin app directory, login to Hippo and deploy your app. (Note: the `hippo login`
-and `spin deploy` commands may require `-k` if running with the `letsencrypt_env` variable
-set to `staging`; which is the current default.)
+Next, `cd` to your Spin app directory, login to Hippo and deploy your app.
 
 Here we've entered the [examples/http-rust](https://github.com/fermyon/spin/tree/main/examples/http-rust)
 directory in the [fermyon/spin](https://github.com/fermyon/spin) GitHub repository:
@@ -154,14 +152,14 @@ For example, when using the default DNS host of `sslip.io`, hitting the endpoint
 the following:
 
 ```console
-$ curl https://spin-deploy.spin-hello-world.hippo.52.44.146.193.sslip.io/hello
+$ curl http://spin-deploy.spin-hello-world.hippo.52.44.146.193.sslip.io/hello
 Hello, Fermyon!
 ```
 
 A few notes:
 
 - It can take a few moments for Traefik to obtain the Let's Encrypt cert for the app domain
-- The current structure for an app's URL on Hippo is `https://<channel name>.<app name>.hippo.<domain>`.
+- The current structure for an app's URL on Hippo is `http(s)://<channel name>.<app name>.hippo.<domain>`.
   When deploying with `spin deploy`, the app name is used for the hippo channel name as well.
 
 # Troubleshooting/Debugging

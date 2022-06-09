@@ -4,15 +4,10 @@ variable "domain" {
   description = "hostname"
 }
 
-variable "letsencrypt_env" {
-  type    = string
-  default = "staging"
-  description = "The Let's Encrypt cert resolver to use. Options are 'staging' and 'prod'. (Default: staging)"
-
-  validation {
-    condition     = var.letsencrypt_env == "staging" || var.letsencrypt_env == "prod"
-    error_message = "The Let's Encrypt env must be either 'staging' or 'prod'."
-  }
+variable "enable_letsencrypt" {
+  type    = bool
+  default = "false"
+  description = "Enable cert provisioning via Let's Encrypt"
 }
 
 job "bindle" {
@@ -30,13 +25,17 @@ job "bindle" {
       name = "bindle"
       port = "http"
 
-      tags = [
+      tags = var.enable_letsencrypt ? [
         "traefik.enable=true",
         "traefik.http.routers.bindle.rule=Host(`${var.domain}`)",
         "traefik.http.routers.bindle.entryPoints=websecure",
         "traefik.http.routers.bindle.tls=true",
-        "traefik.http.routers.bindle.tls.certresolver=letsencrypt-tls-${var.letsencrypt_env}",
+        "traefik.http.routers.bindle.tls.certresolver=letsencrypt-tls",
         "traefik.http.routers.bindle.tls.domains[0].main=${var.domain}",
+      ]: [
+        "traefik.enable=true",
+        "traefik.http.routers.bindle.rule=Host(`${var.domain}`)",
+        "traefik.http.routers.bindle.entryPoints=web", 
       ]
 
       check {

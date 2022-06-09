@@ -105,7 +105,7 @@ export HIPPO_ADMIN_PASSWORD='${hippo_admin_password}'
 export HIPPO_REGISTRATION_MODE='${hippo_registration_mode}'
 
 export DNS_ZONE='${dns_zone}'
-export LETSENCRYPT_ENV='${letsencrypt_env}'
+export ENABLE_LETSENCRYPT='${enable_letsencrypt}'
 
-echo "Running servers using DNS zone '$DNS_ZONE' and Let's Encrypt env '$LETSENCRYPT_ENV'"
+echo "Running servers using DNS zone '$DNS_ZONE'"
 ./run_servers.sh

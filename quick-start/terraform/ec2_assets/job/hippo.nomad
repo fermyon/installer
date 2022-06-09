@@ -10,15 +10,10 @@ variable "bindle_url" {
   description = "The Bindle server URL"
 }
 
-variable "letsencrypt_env" {
-  type    = string
-  default = "staging"
-  description = "The Let's Encrypt cert resolver to use. Options are 'staging' and 'prod'. (Default: staging)"
-
-  validation {
-    condition     = var.letsencrypt_env == "staging" || var.letsencrypt_env == "prod"
-    error_message = "The Let's Encrypt env must be either 'staging' or 'prod'."
-  }
+variable "enable_letsencrypt" {
+  type    = bool
+  default = "false"
+  description = "Enable cert provisioning via Let's Encrypt"
 }
 
 variable "registration_mode" {
@@ -66,13 +61,17 @@ job "hippo" {
       name = "hippo"
       port = "http"
 
-      tags = [
+      tags = var.enable_letsencrypt ? [
         "traefik.enable=true",
         "traefik.http.routers.hippo.rule=Host(`${var.domain}`)",
         "traefik.http.routers.hippo.entryPoints=websecure",
         "traefik.http.routers.hippo.tls=true",
-        "traefik.http.routers.hippo.tls.certresolver=letsencrypt-tls-${var.letsencrypt_env}",
+        "traefik.http.routers.hippo.tls.certresolver=letsencrypt-tls",
         "traefik.http.routers.hippo.tls.domains[0].main=${var.domain}",
+      ] : [
+        "traefik.enable=true",
+        "traefik.http.routers.hippo.rule=Host(`${var.domain}`)",
+        "traefik.http.routers.hippo.entryPoints=web",
       ]
 
       check {
@@ -105,10 +104,10 @@ job "hippo" {
         # Database__Driver            = "postgresql"
         # ConnectionStrings__Database = "Host=localhost;Username=postgres;Password=postgres;Database=hippo"
 
-        ConnectionStrings__Bindle     = var.letsencrypt_env == "prod" ? "server=${var.bindle_url}" : "server=${var.bindle_url};sslmode=disable"
+        ConnectionStrings__Bindle     = "server=${var.bindle_url}"
 
-        Nomad__Traefik__Entrypoint   = "websecure"
-        Nomad__Traefik__CertResolver = "letsencrypt-tls-${var.letsencrypt_env}"
+        Nomad__Traefik__Entrypoint   = var.enable_letsencrypt ? "websecure" : "web"
+        Nomad__Traefik__CertResolver = var.enable_letsencrypt ? "letsencrypt-tls" : ""
 
         Jwt__Key      = "ceci n'est pas une jeton"
         Jwt__Issuer   = "localhost"

@@ -100,8 +100,8 @@ resource "aws_instance" "ec2" {
 
   user_data = templatefile("${path.module}/scripts/user-data.sh",
     {
-      dns_zone                = var.dns_host == "sslip.io" ? "${aws_eip.lb.public_ip}.${var.dns_host}" : "${var.dns_host}",
-      letsencrypt_env         = var.letsencrypt_env,
+      dns_zone                = var.dns_host == "sslip.io" ? "${aws_eip.lb.public_ip}.${var.dns_host}" : var.dns_host,
+      enable_letsencrypt      = var.enable_letsencrypt,
 
       nomad_version           = local.nomad_version,
       nomad_checksum          = local.nomad_checksum,
@@ -168,7 +168,7 @@ resource "aws_security_group_rule" "allow_ssh_inbound" {
 }
 
 resource "aws_security_group_rule" "allow_traefik_app_http_inbound" {
-  count       = length(var.allowed_inbound_cidr_blocks) > 0 ? 1 : 0
+  count       = !var.enable_letsencrypt && length(var.allowed_inbound_cidr_blocks) > 0 ? 1 : 0
   type        = "ingress"
   from_port   = 80
   to_port     = 80
@@ -179,7 +179,7 @@ resource "aws_security_group_rule" "allow_traefik_app_http_inbound" {
 }
 
 resource "aws_security_group_rule" "allow_traefik_app_https_inbound" {
-  count       = length(var.allowed_inbound_cidr_blocks) > 0 ? 1 : 0
+  count       = var.enable_letsencrypt && length(var.allowed_inbound_cidr_blocks) > 0 ? 1 : 0
   type        = "ingress"
   from_port   = 443
   to_port     = 443
