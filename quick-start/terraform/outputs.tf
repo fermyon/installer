@@ -44,12 +44,10 @@ output "environment" {
   description = "Get environment config by running: $(terraform output -raw environment)"
   sensitive   = true
   value       = <<EOM
-export ELASTIC_IP_ADDRESS=${aws_eip.lb.public_ip}
-export DNS_DOMAIN=${var.dns_host}
-export HIPPO_URL=https://hippo.${aws_eip.lb.public_ip}.${var.dns_host}
+export HIPPO_URL=${var.dns_host == "sslip.io" ? "https://hippo.${aws_eip.lb.public_ip}.${var.dns_host}" : "https://hippo.${var.dns_host}"}
 export HIPPO_USERNAME=${var.hippo_admin_username}
 export HIPPO_PASSWORD=${random_password.hippo_admin_password.result}
-export BINDLE_URL=https://bindle.${aws_eip.lb.public_ip}.${var.dns_host}/v1
+export BINDLE_URL=${var.dns_host == "sslip.io" ? "https://bindle.${aws_eip.lb.public_ip}.${var.dns_host}/v1" : "https://bindle.${var.dns_host}/v1"}
 
 EOM
 }

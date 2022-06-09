@@ -121,8 +121,6 @@ $(terraform output -raw environment)
 This will export the following environment variables, for use by the CLIs and example
 commands below:
 
-  - `ELASTIC_IP_ADDRESS`
-  - `DNS_DOMAIN`
   - `HIPPO_USERNAME`
   - `HIPPO_PASSWORD`
   - `HIPPO_URL`
@@ -148,7 +146,7 @@ $ spin deploy
 Successfully deployed application!
 ```
 
-We can then hit our app's served route (`/hello`) via its URL. First, navigate to the Hippo dashboard
+You can then hit your app's served route (`/hello`) via its URL. First, navigate to the Hippo dashboard
 (`$HIPPO_URL`), log in with the `$HIPPO_USERNAME` and `$HIPPO_PASSWORD` values and then find the app's
 URL on the app page.
 
