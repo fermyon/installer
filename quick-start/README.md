@@ -112,18 +112,23 @@ For in-depth guides, follow the [Spin documentation](https://spin.fermyon.dev/) 
 
 Here's an example flow once `terraform apply` completes.
 
-First, export pertinent environment variables based on terraform output values:
+First, export pertinent environment variables using the `environment` output:
 
 ```console
-export ELASTIC_IP_ADDRESS=$(terraform output -raw eip_public_ip_address)
-export DNS_DOMAIN=$(terraform output -raw dns_host)
-export HIPPO_URL=$(terraform output -raw hippo_url)
-export HIPPO_USERNAME=$(terraform output -raw hippo_admin_username)
-export HIPPO_PASSWORD=$(terraform output -raw hippo_admin_password)
-export BINDLE_URL=$(terraform output -raw bindle_url)
+$(terraform output -raw environment)
 ```
 
-Next, `cd` to your Spin app directory, login to Hippo and deploy your app.
+This will export the following environment variables, for use by the CLIs and example
+commands below:
+
+  - `HIPPO_USERNAME`
+  - `HIPPO_PASSWORD`
+  - `HIPPO_URL`
+  - `BINDLE_URL`
+
+Next, `cd` to your Spin app directory, login to Hippo and deploy your app. (Note: the `hippo login`
+and `spin deploy` commands may require `-k` if running with the `letsencrypt_env` variable
+set to `staging`; which is the current default.)
 
 Here we've entered the [examples/http-rust](https://github.com/fermyon/spin/tree/main/examples/http-rust)
 directory in the [fermyon/spin](https://github.com/fermyon/spin) GitHub repository:
@@ -141,10 +146,15 @@ $ spin deploy
 Successfully deployed application!
 ```
 
-We can then hit our app's served route (`/hello`) via its https URL.
+You can then hit your app's served route (`/hello`) via its URL. First, navigate to the Hippo dashboard
+(`$HIPPO_URL`), log in with the `$HIPPO_USERNAME` and `$HIPPO_PASSWORD` values and then find the app's
+URL on the app page.
+
+For example, when using the default DNS host of `sslip.io`, hitting the endpoint would look something like
+the following:
 
 ```console
-$ curl https://spin-hello-world.spin-hello-world.hippo.${DNS_DOMAIN}/hello
+$ curl https://spin-hello-world.spin-hello-world.hippo.52.44.146.193.sslip.io/hello
 Hello, Fermyon!
 ```
 
@@ -235,10 +245,27 @@ time="2022-05-18T23:42:32Z" level=info msg="Traefik version 2.6.6 built on 2022-
 
 You may wish to access the Nomad and/or Consul APIs from outside of the EC2 instance.
 
-Note, however, that these currently run on unsecured http ports, therefore it is
-highly encouraged to minimally update the terraform deploy to restrict inbound IP addresses
-(`var.allowed_inbound_cidr_blocks`). Otherwise, The Entire Internet will have access
-to the Nomad and Consul instances.
+### Access via SSH tunnel
+
+The safest approach is to access the services via SSH tunnels.
+
+#### Access Nomad and Consul
+
+Nomad is configured to run on port 4646 and Consul on 8500.  Here we include both for the SSH tunnel:
+
+```console
+ssh -i /tmp/ec2_ssh_private_key.pem \
+  -L 4646:127.0.0.1:4646 \
+  -L 8500:127.0.0.1:8500 \
+  -N ubuntu@$(terraform output -raw eip_public_ip_address)
+```
+
+(Additional ports may be added, for instance 8200 for Vault, 8081 for Traefik, etc.)
+
+Alternatively, the ports can be opened up at the EC2 firewall level. Note, however, that these
+currently run on unsecured http ports, therefore it is highly encouraged to minimally
+update the terraform deploy to restrict inbound IP addresses (`var.allowed_inbound_cidr_blocks`).
+Otherwise, The Entire Internet will have access to the Nomad and Consul instances.
 
 ### Open up the Nomad http port
 
