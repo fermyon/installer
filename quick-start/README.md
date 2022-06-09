@@ -249,19 +249,20 @@ You may wish to access the Nomad and/or Consul APIs from outside of the EC2 inst
 
 ### Access via SSH tunnel
 
-The safest approach is to access the services via SSH tunnels:
+The safest approach is to access the services via SSH tunnels.
 
-#### Access Nomad
+#### Access Nomad and Consul
 
-```console
-ssh -i /tmp/ec2_ssh_private_key.pem -L 4646:127.0.0.1:4646 -N ubuntu@$(terraform output -raw eip_public_ip_address)
-```
-
-#### Access Consul
+Nomad is configured to run on port 4646 and Consul on 8500.  Here we include both for the SSH tunnel:
 
 ```console
-ssh -i /tmp/ec2_ssh_private_key.pem -L 8500:127.0.0.1:8500 -N ubuntu@$(terraform output -raw eip_public_ip_address)
+ssh -i /tmp/ec2_ssh_private_key.pem \
+  -L 4646:127.0.0.1:4646 \
+  -L 8500:127.0.0.1:8500 \
+  -N ubuntu@$(terraform output -raw eip_public_ip_address)
 ```
+
+(Additional ports may be added, for instance 8200 for Vault, 8081 for Traefik, etc.)
 
 Alternatively, the ports can be opened up at the EC2 firewall level. Note, however, that these
 currently run on unsecured http ports, therefore it is highly encouraged to minimally
