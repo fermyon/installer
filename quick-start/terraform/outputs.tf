@@ -26,7 +26,7 @@ output "bindle_url" {
 
 output "hippo_url" {
   description = "The URL for the Hippo server"
-  value       = aws_eip.lb.public_ip == "sslip.io" ? "https://hippo.${aws_eip.lb.public_ip}.${var.dns_host}" : "https://hippo.${var.dns_host}"
+  value       = var.dns_host == "sslip.io" ? "https://hippo.${aws_eip.lb.public_ip}.${var.dns_host}" : "https://hippo.${var.dns_host}"
 }
 
 output "hippo_admin_username" {
