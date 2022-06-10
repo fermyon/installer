@@ -283,6 +283,8 @@ terraform apply -var='allow_inbound_http_consul=true'
 
 ## Generating a session token in AWS
 
+_Note: AWS currently [does not support FIDO security keys with its CLI tool](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa_fido_supported_configurations.html#id_credentials_mfa_fido_cliapi)._
+
 If your AWS user is associated with an MFA-only policy, you'll most likely need
 to generate a temporary set of credentials prior to running this automation.
 
