@@ -33,6 +33,8 @@ Traefik's Let's Encrypt integration and will be accessible to the broader intern
 
 - The [terraform CLI](https://learn.hashicorp.com/tutorials/terraform/install-cli#install-terraform)
 
+- The [Spin CLI](https://spin.fermyon.dev/quickstart)
+
 # Resources deployed
 
 This example creates the following resources in the provided AWS account:
@@ -92,13 +94,10 @@ Deploy with a custom domain name:
 terraform apply -var='dns_host=example.com'
 ```
 
-Quick disclaimer with `letsencrypt_env=prod`: if the DNS record does not propagate in time, Let's Encrypt may incur a rate limit on your domain. Create the A record for *.example.com as soon as you can, making sure it points to the Elastic IP's public address. See https://letsencrypt.org/docs/staging-environment/#rate-limits for more details.
-
-When all wrapped up, resources can be destroyed via:
-
-```console
-terraform destroy
-```
+Quick disclaimer when Let's Encrypt is enabled: if the DNS record does not propagate in time,
+Let's Encrypt may incur a rate limit on your domain. Create the A record for *.example.com as soon as you can,
+making sure it points to the Elastic IP's public address.
+See https://letsencrypt.org/docs/staging-environment/#rate-limits for more details.
 
 # Interacting with the Fermyon Platform
 
@@ -121,46 +120,71 @@ $(terraform output -raw environment)
 This will export the following environment variables, for use by the CLIs and example
 commands below:
 
+  - `DNS_DOMAIN`
   - `HIPPO_USERNAME`
   - `HIPPO_PASSWORD`
   - `HIPPO_URL`
   - `BINDLE_URL`
 
-Next, `cd` to your Spin app directory, login to Hippo and deploy your app.
-
-Here we've entered the [examples/http-rust](https://github.com/fermyon/spin/tree/main/examples/http-rust)
-directory in the [fermyon/spin](https://github.com/fermyon/spin) GitHub repository:
+Next, you're ready to log in to Hippo, create a new Spin app and deploy to Hippo.
 
 ```console
-$ cd ~/code/github.com/fermyon/spin/examples/http-rust
-
 $ hippo login
 Logged in as admin
 
+$ spin templates install --git https://github.com/fermyon/spin
+Copying remote template source
+Installing template redis-rust...
+Installing template http-rust...
+Installing template http-go...
+Installing template redis-go...
+Installed 4 template(s)
+
++---------------------------------------------------+
+| Name         Description                          |
++===================================================+
+| http-go      HTTP request handler using (Tiny)Go  |
+| http-rust    HTTP request handler using Rust      |
+| redis-go     Redis message handler using (Tiny)Go |
+| redis-rust   Redis message handler using Rust     |
++---------------------------------------------------+
+
+$ spin new http-rust myapp
+Project description: My first Fermyon app
+HTTP base: /
+HTTP path: /hello
+
+$ cd myapp/
+
 $ spin build
-<output omitted>
+<build output omitted>
 
 $ spin deploy
 Successfully deployed application!
 ```
 
-You can then hit your app's served route (`/hello`) via its URL. First, navigate to the Hippo dashboard
-(`$HIPPO_URL`), log in with the `$HIPPO_USERNAME` and `$HIPPO_PASSWORD` values and then find the app's
-URL on the app page.
+You can then hit your app's served route (`/hello`) via its URL.
 
-For example, when using the default DNS host of `sslip.io`, hitting the endpoint would look something like
-the following:
+The default structure for an app's URL on Hippo is `http(s)://<channel name>.<app name>.hippo.<domain>`.
+When deploying with `spin deploy`, the app name is used for the hippo channel name as well.
+
+You can also find the app URL by navigating to the Hippo dashboard (`$HIPPO_URL`), loggging in
+with the `$HIPPO_USERNAME` and `$HIPPO_PASSWORD` values and then clicking on the app page.
+
+Here's what the URL looks like based on the example above:
 
 ```console
-$ curl http://spin-deploy.spin-hello-world.hippo.52.44.146.193.sslip.io/hello
-Hello, Fermyon!
+$ curl http://myapp.myapp.hippo.${DNS_DOMAIN}/hello
+Hello, Fermyon
 ```
 
-A few notes:
+## Cleaning up
 
-- It can take a few moments for Traefik to obtain the Let's Encrypt cert for the app domain
-- The current structure for an app's URL on Hippo is `http(s)://<channel name>.<app name>.hippo.<domain>`.
-  When deploying with `spin deploy`, the app name is used for the hippo channel name as well.
+When the provisioned resources in this example are no longer needed, they can be destroyed via:
+
+```console
+terraform destroy
+```
 
 # Troubleshooting/Debugging
 
