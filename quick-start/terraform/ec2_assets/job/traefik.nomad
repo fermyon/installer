@@ -50,11 +50,6 @@ job "traefik" {
 [entryPoints]
   [entryPoints.web]
     address = ":80"
-    [entryPoints.web.http]
-      [entryPoints.web.http.redirections]
-        [entryPoints.web.http.redirections.entryPoint]
-          to = "websecure"
-          scheme = "https"
 
   [entryPoints.websecure]
     address = ":443"
@@ -64,16 +59,13 @@ job "traefik" {
     address = ":8081"
 
 # Let's Encrypt TLS
-[certificatesResolvers.letsencrypt-tls-staging.acme]
-  email = "fermyon-hashistack-demo@fermyon.dev"
+[certificatesResolvers.letsencrypt-tls.acme]
+  # Supply an email to get cert expiration notices
+  # email = "you@example.com"
+  # The CA server can be toggled to staging for testing/avoiding rate limits
+  # caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
   storage = "/acme.json"
-  caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
-  [certificatesResolvers.letsencrypt-tls-staging.acme.tlsChallenge]
-
-[certificatesResolvers.letsencrypt-tls-prod.acme]
-  email = "fermyon-hashistack-demo@fermyon.dev"
-  storage = "/acme.json"
-  [certificatesResolvers.letsencrypt-tls-prod.acme.tlsChallenge]
+  [certificatesResolvers.letsencrypt-tls.acme.tlsChallenge]
 
 [api]
     dashboard = true

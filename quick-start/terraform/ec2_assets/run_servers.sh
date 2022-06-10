@@ -4,7 +4,13 @@ set -euo pipefail
 # Derived from https://github.com/fermyon/nomad-local-demo
 
 export DNS_ZONE="${DNS_ZONE:-local.fermyon.link}"
-export LETSENCRYPT_ENV="${LETSENCRYPT_ENV:-staging}"
+export ENABLE_LETSENCRYPT="${ENABLE_LETSENCRYPT:-false}"
+
+if $ENABLE_LETSENCRYPT; then
+  export PLATFORM_PROTOCOL="https"
+else
+  export PLATFORM_PROTOCOL="http"
+fi
 
 export VAULT_ADDR=http://localhost:8200
 export VAULT_TOKEN=devroot
@@ -83,7 +89,7 @@ nomad run job/traefik.nomad
 echo "Starting bindle job..."
 nomad run \
   -var domain="bindle.${DNS_ZONE}" \
-  -var letsencrypt_env="${LETSENCRYPT_ENV}" \
+  -var enable_letsencrypt="${ENABLE_LETSENCRYPT}" \
   job/bindle.nomad
 
 echo "Starting hippo job..."
@@ -92,8 +98,8 @@ nomad run \
   -var registration_mode="${HIPPO_REGISTRATION_MODE}" \
   -var admin_username="${HIPPO_ADMIN_USERNAME}" \
   -var admin_password="${HIPPO_ADMIN_PASSWORD}" \
-  -var bindle_url="https://bindle.${DNS_ZONE}/v1" \
-  -var letsencrypt_env="${LETSENCRYPT_ENV}" \
+  -var bindle_url="${PLATFORM_PROTOCOL}://bindle.${DNS_ZONE}/v1" \
+  -var enable_letsencrypt="${ENABLE_LETSENCRYPT}" \
   job/hippo.nomad
 
 echo
@@ -103,7 +109,7 @@ echo "Consul:  http://localhost:8500"
 echo "Nomad:   http://localhost:4646"
 echo "Vault:   http://localhost:8200"
 echo "Traefik: http://localhost:8081"
-echo "Hippo:   https://hippo.${DNS_ZONE}"
+echo "Hippo:   ${PLATFORM_PROTOCOL}://hippo.${DNS_ZONE}"
 echo
 echo "Logs are stored in ./log"
 echo
@@ -114,8 +120,8 @@ echo "    export NOMAD_ADDR=http://127.0.0.1:4646"
 echo "    export VAULT_ADDR=${VAULT_ADDR}"
 echo "    export VAULT_TOKEN=$(<data/vault/token)"
 echo "    export VAULT_UNSEAL=$(<data/vault/unseal)"
-echo "    export BINDLE_URL=https://bindle.${DNS_ZONE}/v1"
-echo "    export HIPPO_URL=https://hippo.${DNS_ZONE}"
+echo "    export BINDLE_URL=${PLATFORM_PROTOCOL}://bindle.${DNS_ZONE}/v1"
+echo "    export HIPPO_URL=${PLATFORM_PROTOCOL}://hippo.${DNS_ZONE}"
 echo
 echo "Ctrl+C to exit."
 echo
