@@ -99,12 +99,6 @@ Let's Encrypt may incur a rate limit on your domain. Create the A record for *.e
 making sure it points to the Elastic IP's public address.
 See https://letsencrypt.org/docs/staging-environment/#rate-limits for more details.
 
-When all wrapped up, resources can be destroyed via:
-
-```console
-terraform destroy
-```
-
 # Interacting with the Fermyon Platform
 
 Once this example has been deployed, you're ready to start building and deploying applications
@@ -182,6 +176,14 @@ Here's what the URL looks like based on the example above:
 ```console
 $ curl http://myapp.myapp.hippo.${DNS_DOMAIN}/hello
 Hello, Fermyon
+```
+
+## Cleaning up
+
+When the provisioned resources in this example are no longer needed, they can be destroyed via:
+
+```console
+terraform destroy
 ```
 
 # Troubleshooting/Debugging
