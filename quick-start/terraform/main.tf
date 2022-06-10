@@ -242,4 +242,5 @@ resource "aws_key_pair" "ec2_ssh_key_pair" {
 resource "random_password" "hippo_admin_password" {
   length           = 22
   special          = true
+  override_special = "!#%&*-_=+<>:?"
 }
