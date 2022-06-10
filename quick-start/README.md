@@ -94,7 +94,10 @@ Deploy with a custom domain name:
 terraform apply -var='dns_host=example.com'
 ```
 
-Quick disclaimer with `letsencrypt_env=prod`: if the DNS record does not propagate in time, Let's Encrypt may incur a rate limit on your domain. Create the A record for *.example.com as soon as you can, making sure it points to the Elastic IP's public address. See https://letsencrypt.org/docs/staging-environment/#rate-limits for more details.
+Quick disclaimer when Let's Encrypt is enabled: if the DNS record does not propagate in time,
+Let's Encrypt may incur a rate limit on your domain. Create the A record for *.example.com as soon as you can,
+making sure it points to the Elastic IP's public address.
+See https://letsencrypt.org/docs/staging-environment/#rate-limits for more details.
 
 When all wrapped up, resources can be destroyed via:
 
