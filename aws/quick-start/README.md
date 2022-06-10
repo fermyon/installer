@@ -1,12 +1,11 @@
-# Nomad on AWS - Quick Start
+# AWS Quick Start
 
-This is a Quick Start example to deploy Nomad and Fermyon Platform on AWS
-using Terraform.
+This is a Quick Start example to deploy Fermyon on AWS using Terraform.
 
 As such, this is intended solely for evaluation and/or demo scenarios, i.e.
 *not* for production.
 
-All Hashistack (Nomad, Consul, Vault), Traefik and Fermyon Platform processes run
+All Hashistack (Nomad, Consul, Vault), Traefik and Fermyon platform processes run
 without any redundancy on a single EC2 instance. There is no data backup for any
 service.
 
@@ -56,8 +55,8 @@ By default, the allowed inbound and SSH CIDR block is `0.0.0.0/0` aka The Entire
 It is certainly advised to scope the allowed SSH CIDR block down to a single IP or known subset.
 
 As this example takes a stock Ubuntu AMI and then proceeds to download Fermyon and Hashistack binaries,
-the default inbound CIDR block is likely necessary for first startup. After confirmation that the
-Fermyon Platform is up and running - and as long as subsequent apps/workloads won't need access to
+the default inbound CIDR block is likely necessary for first startup. After confirmation that
+Fermyon is up and running - and as long as subsequent apps/workloads won't need access to
 the broader internet - this value may be updated on a subsequent `terraform apply` if desired, e.g.
 `terraform apply -var=allowed_inbound_cidr_blocks=["75.75.75.75/32"]`.
 
@@ -99,10 +98,10 @@ Let's Encrypt may incur a rate limit on your domain. Create the A record for *.e
 making sure it points to the Elastic IP's public address.
 See https://letsencrypt.org/docs/staging-environment/#rate-limits for more details.
 
-# Interacting with the Fermyon Platform
+# Interacting with Fermyon
 
 Once this example has been deployed, you're ready to start building and deploying applications
-on the Fermyon Platform.
+on Fermyon.
 
 For in-depth guides, follow the [Spin documentation](https://spin.fermyon.dev/) or
 [Hippo documentation](https://docs.hippofactory.dev/) to get started.
@@ -273,7 +272,8 @@ The safest approach is to access the services via SSH tunnels.
 
 #### Access Nomad and Consul
 
-Nomad is configured to run on port 4646 and Consul on 8500.  Here we include both for the SSH tunnel:
+Nomad is configured to run on port 4646 and Consul on 8500. This following command sets
+up the local SSH tunnel and will run until stopped:
 
 ```console
 ssh -i /tmp/ec2_ssh_private_key.pem \
@@ -282,7 +282,12 @@ ssh -i /tmp/ec2_ssh_private_key.pem \
   -N ubuntu@$(terraform output -raw eip_public_ip_address)
 ```
 
+You should now be able to interact with these services, for example by navigating in your
+browser to the Nomad dashboard at 127.0.0.1:4646.
+
 (Additional ports may be added, for instance 8200 for Vault, 8081 for Traefik, etc.)
+
+### Access via EC2 ports
 
 Alternatively, the ports can be opened up at the EC2 firewall level. Note, however, that these
 currently run on unsecured http ports, therefore it is highly encouraged to minimally
