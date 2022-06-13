@@ -31,7 +31,6 @@ echo "Starting consul..."
 consul agent -dev \
   -config-file ./etc/consul.hcl \
   -bootstrap-expect 1 \
-  -client '0.0.0.0' \
   &>log/consul.log &
 
 # NOTE(bacongobbler): nomad MUST run as root for the exec driver to work on Linux.
