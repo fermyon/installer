@@ -37,7 +37,7 @@ consul agent -dev \
 # https://github.com/deislabs/hippo/blob/de73ae52d606c0a2351f90069e96acea831281bc/src/Infrastructure/Jobs/NomadJob.cs#L28
 # https://www.nomadproject.io/docs/drivers/exec#client-requirements
 case "$OSTYPE" in
- linux*) SUDO=sudo ;;
+ linux*) SUDO="sudo --preserve-env=PATH" ;;
  *) SUDO= ;;
 esac
 
