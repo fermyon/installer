@@ -1,4 +1,3 @@
-bind_addr            = "0.0.0.0"
 log_level            = "INFO"
 disable_update_check = true
 
