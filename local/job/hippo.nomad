@@ -83,7 +83,7 @@ job "hippo" {
         Jwt__Issuer   = "localhost"
         Jwt__Audience = "localhost"
 
-        Kestrel__Endpoints__Https__Url = "http://${NOMAD_IP_http}:${NOMAD_PORT_http}"
+        Kestrel__Endpoints__Https__Url = "http://${NOMAD_ADDR_http}"
       }
 
       config {

@@ -45,7 +45,7 @@ job "bindle" {
         command = "bindle-server"
         args = [
           "--unauthenticated",
-          "--address", "${NOMAD_IP_http}:${NOMAD_PORT_http}",
+          "--address", "${NOMAD_ADDR_http}",
           # PRO TIP: set to an absolute directory to persist bindles when job
           # is restarted
           "--directory", "${NOMAD_TASK_DIR}",
