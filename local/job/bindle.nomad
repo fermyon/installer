@@ -4,6 +4,26 @@ variable "domain" {
   description = "hostname"
 }
 
+variable "os" {
+  type        = string
+  default     = "macos"
+  description = "Operating system for downloading Bindle"
+  validation {
+    condition     = var.os == "macos" || var.os == "linux"
+    error_message = "Invalid value for os; valid values are [macos, linux]."
+  }
+}
+
+variable "arch" {
+  type        = string
+  default     = "amd64"
+  description = "Architecture for downloading Bindle"
+  validation {
+    condition     = var.arch == "amd64" || var.arch == "aarch64"
+    error_message = "Invalid value for arch; valid values are [amd64, aarch64]."
+  }
+}
+
 job "bindle" {
   datacenters = ["dc1"]
   type        = "service"
@@ -36,6 +56,10 @@ job "bindle" {
 
     task "bindle" {
       driver = "raw_exec"
+
+      artifact {
+        source = "https://bindle.blob.core.windows.net/releases/bindle-v0.8.0-${var.os}-${var.arch}.tar.gz"
+      }
 
       env {
         RUST_LOG = "error,bindle=debug"

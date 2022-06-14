@@ -11,8 +11,6 @@ The environment is ephemeral and will not persist any data.
 
 [Nomad](https://www.nomadproject.io/docs/install)
 [Consul](https://www.consul.io/docs/install)
-[Traefik](https://doc.traefik.io/traefik/getting-started/install-traefik)
-[Bindle](https://github.com/deislabs/bindle/blob/main/docs/README.md)
 [Spin CLI](https://spin.fermyon.dev/quickstart)
 
 # How to Deploy
