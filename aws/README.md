@@ -10,9 +10,9 @@ without any redundancy on a single EC2 instance. There is no data backup for any
 service.
 
 That being said, it should give users a quick look and feel for deploying apps
-using Fermyon. Apps will by default be provided with TLS certs via
-Traefik's Let's Encrypt integration and will be accessible to the broader internet
-(depending on configuration details mentioned below).
+using Fermyon. By default, all apps will be accessible to the broader internet
+(see the configuration details mentioned below). Additionally, when Let's Encrypt
+is enabled, apps will be provided with https URLs and TLS certs courtesy LE.
 
 # Prerequisites
 
