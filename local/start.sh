@@ -19,19 +19,7 @@ cleanup() {
   kill $(jobs -p)
   wait
 }
-
-# change to the directory of this script
-cd "$(dirname "${BASH_SOURCE[0]}")"
-
 trap cleanup EXIT
-rm -rf ./data
-mkdir -p log
-
-echo "Starting consul..."
-consul agent -dev \
-  -config-file ./etc/consul.hcl \
-  -bootstrap-expect 1 \
-  &>log/consul.log &
 
 echo "Waiting for consul..."
 while ! consul members &>/dev/null; do
@@ -46,6 +34,18 @@ case "$OSTYPE" in
  *) SUDO= ;;
 esac
 
+# change to the directory of this script
+cd "$(dirname "${BASH_SOURCE[0]}")"
+
+${SUDO} rm -rf ./data
+mkdir -p log
+
+echo "Starting consul..."
+consul agent -dev \
+  -config-file ./etc/consul.hcl \
+  -bootstrap-expect 1 \
+  &>log/consul.log &
+
 echo "Starting nomad..."
 ${SUDO} nomad agent -dev \
   -config ./etc/nomad.hcl \
@@ -57,10 +57,6 @@ echo "Waiting for nomad..."
 while ! nomad server members 2>/dev/null | grep -q alive; do
   sleep 2
 done
-
-# Ensure data/ can be removed by current user
-${SUDO} chown -R ":$(id -g)" data
-${SUDO} chmod -R g+rwx data
 
 echo "Starting traefik job..."
 nomad run job/traefik.nomad
