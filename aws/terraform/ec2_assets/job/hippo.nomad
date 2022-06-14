@@ -85,6 +85,24 @@ job "hippo" {
     task "hippo" {
       driver = "raw_exec"
 
+      artifact {
+        source = "https://gist.githubusercontent.com/bacongobbler/48dc7b01aa99fa4b893eeb6b62f8cd27/raw/fb4dae8f42bc6aea22b2566084d01fa0de845e7c/styles.css"
+      }
+
+      artifact {
+        source = "https://gist.githubusercontent.com/bacongobbler/48dc7b01aa99fa4b893eeb6b62f8cd27/raw/fb4dae8f42bc6aea22b2566084d01fa0de845e7c/logo.svg"
+        destination = "/home/ubuntu/hippo/linux-x64/wwwroot/assets/"
+      }
+
+      artifact {
+        source = "https://gist.githubusercontent.com/bacongobbler/48dc7b01aa99fa4b893eeb6b62f8cd27/raw/fb4dae8f42bc6aea22b2566084d01fa0de845e7c/config.json"
+      }
+
+      artifact {
+        source = "https://www.fermyon.com/favicon.ico"
+        destination = "/home/ubuntu/hippo/linux-x64/wwwroot/assets/"
+      }
+
       env {
         # Enable for debug logging
         # Logging__LogLevel__Default = "Debug"
@@ -118,7 +136,7 @@ job "hippo" {
 
       config {
         command = "bash"
-        args    = ["-c", "cd /home/ubuntu/hippo/linux-x64 && ./Hippo.Web"]
+        args    = ["-c", "mv local/styles.css /home/ubuntu/hippo/linux-x64/wwwroot/ && mv local/config.json /home/ubuntu/hippo/linux-x64/wwwroot/assets/ &&cd /home/ubuntu/hippo/linux-x64 && ./Hippo.Web"]
       }
     }
   }
