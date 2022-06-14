@@ -8,10 +8,8 @@ require() {
   fi
 }
 
-require bindle-server
 require consul
 require nomad
-require traefik
 
 cleanup() {
   echo
@@ -42,8 +40,8 @@ done
 # https://github.com/deislabs/hippo/blob/de73ae52d606c0a2351f90069e96acea831281bc/src/Infrastructure/Jobs/NomadJob.cs#L28
 # https://www.nomadproject.io/docs/drivers/exec#client-requirements
 case "$OSTYPE" in
- linux*) SUDO="sudo --preserve-env=PATH" ;;
- *) SUDO= ;;
+  linux*) SUDO="sudo --preserve-env=PATH" ;;
+  *) SUDO= ;;
 esac
 
 echo "Starting nomad..."
@@ -66,9 +64,33 @@ echo "Starting traefik job..."
 nomad run job/traefik.nomad
 
 echo "Starting bindle job..."
-nomad run job/bindle.nomad
+
+case "$(uname -m)" in
+  amd64 | x86_64)
+    arch=amd64
+    ;;
+  aarch64 | arm64)
+    arch=aarch64
+    ;;
+  *)
+    echo "$(uname -m) architecture not supported."
+    ;;
+esac
+
+case "${OSTYPE}" in
+  darwin*)
+    nomad run -var="os=macos" -var="arch=${arch}" job/bindle.nomad
+    ;;
+  linux*)
+    nomad run -var="os=linux" -var="arch=${arch}" job/bindle.nomad
+    ;;
+  *)
+    echo "Bindle is only started on MacOS and Linux"
+    ;;
+esac
 
 echo "Starting hippo job..."
+
 case "${OSTYPE}" in
   darwin*)
     nomad run -var="os=osx" job/hippo.nomad
