@@ -53,6 +53,10 @@ while ! nomad server members 2>/dev/null | grep -q alive; do
   sleep 2
 done
 
+# Ensure data/ can be removed by current user
+${SUDO} chown -R ":$(id -g)" data
+${SUDO} chmod -R g+rwx data
+
 echo "Starting traefik job..."
 nomad run job/traefik.nomad
 
