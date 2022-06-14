@@ -32,7 +32,7 @@ job "traefik" {
       driver = "raw_exec"
 
       artifact {
-        source = "https://github.com/traefik/traefik/releases/download/v2.7.1/traefik_v2.7.1_${attr.os.name}_${attr.cpu.arch}.tar.gz"
+        source = "https://github.com/traefik/traefik/releases/download/v2.7.1/traefik_v2.7.1_${attr.kernel.name}_${attr.cpu.arch}.tar.gz"
       }
 
       config {
