@@ -51,6 +51,11 @@ consul agent -dev \
   -bind "${IP_ADDRESS}" \
   &>log/consul.log &
 
+echo "Waiting for consul..."
+while ! consul members &>/dev/null; do
+  sleep 2
+done
+
 echo "Starting vault..."
 vault server -dev \
   -dev-root-token-id "$VAULT_TOKEN" \
