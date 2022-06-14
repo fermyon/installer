@@ -92,7 +92,7 @@ case "${OSTYPE}" in
     nomad run -var="os=osx" job/hippo.nomad
     ;;
   linux*)
-    nomad run -var="os=linux" -var="driver=exec" job/hippo.nomad
+    nomad run -var="os=linux" job/hippo.nomad
     ;;
   *)
     echo "Hippo is only started on MacOS and Linux"

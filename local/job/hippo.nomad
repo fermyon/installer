@@ -26,15 +26,6 @@ variable "os" {
   }
 }
 
-variable "driver" {
-  type = string
-  default = "raw_exec"
-  validation {
-    condition = var.driver == "raw_exec" || var.driver == "exec"
-    error_message = "Invalid value for driver; valid values are [raw_exec, exec]."
-  }
-}
-
 job "hippo" {
   datacenters = ["dc1"]
   type        = "service"
@@ -64,7 +55,7 @@ job "hippo" {
     }
 
     task "hippo" {
-      driver = var.driver
+      driver = "raw_exec"
 
       artifact {
         source = "https://github.com/deislabs/hippo/releases/download/${var.hippo_version}/hippo-server-${var.os}-x64.tar.gz"
