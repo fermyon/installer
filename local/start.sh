@@ -19,11 +19,6 @@ cleanup() {
 }
 trap cleanup EXIT
 
-echo "Waiting for consul..."
-while ! consul members &>/dev/null; do
-  sleep 2
-done
-
 # NOTE(bacongobbler): nomad MUST run as root for the exec driver to work on Linux.
 # https://github.com/deislabs/hippo/blob/de73ae52d606c0a2351f90069e96acea831281bc/src/Infrastructure/Jobs/NomadJob.cs#L28
 # https://www.nomadproject.io/docs/drivers/exec#client-requirements
@@ -43,6 +38,11 @@ consul agent -dev \
   -config-file ./etc/consul.hcl \
   -bootstrap-expect 1 \
   &>log/consul.log &
+
+echo "Waiting for consul..."
+while ! consul members &>/dev/null; do
+  sleep 2
+done
 
 echo "Starting nomad..."
 ${SUDO} nomad agent -dev \
