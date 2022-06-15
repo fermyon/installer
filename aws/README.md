@@ -97,7 +97,7 @@ Let's Encrypt may incur a rate limit on your domain. Create the A record for *.e
 making sure it points to the Elastic IP's public address.
 See https://letsencrypt.org/docs/staging-environment/#rate-limits for more details.
 
-## Environment estup
+## Environment setup
 
 When Terraform finishes provisioning, it will supply URL and username/password
 values for Hippo and Bindle, which will be needed to deploy your first
