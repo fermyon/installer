@@ -47,10 +47,11 @@ job "hippo" {
       ]
 
       check {
-        name     = "alive"
-        type     = "tcp"
+        name     = "healthz"
+        type     = "http"
+        path     = "/healthz"
         interval = "10s"
-        timeout  = "2s"
+        timeout  = "5s"
       }
     }
 
