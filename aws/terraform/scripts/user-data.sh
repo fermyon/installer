@@ -5,7 +5,7 @@ set -euo pipefail
 
 # Note: this is used as a template in Terraform, where vars are injected to
 # produce the final version. As such, all vars *not* intended to be resolved
-# at the Terraform level should just be '$var'.  
+# at the Terraform level should just be '$var'.
 
 # -----------------------------------------------------------------------------
 # Helpers
@@ -85,6 +85,14 @@ curl -sLO https://github.com/deislabs/hippo/releases/download/${hippo_version}/h
 validate-checksum "hippo-server-linux-x64.tar.gz" "${hippo_checksum}"
 mkdir -p /home/ubuntu/hippo
 sudo tar zxvf hippo-server-linux-x64.tar.gz -C /home/ubuntu/hippo
+
+echo "Install Hippo Theme - Fermyon"
+curl -sLO https://gist.githubusercontent.com/bacongobbler/48dc7b01aa99fa4b893eeb6b62f8cd27/raw/fb4dae8f42bc6aea22b2566084d01fa0de845e7c/styles.css
+curl -sLO https://gist.githubusercontent.com/bacongobbler/48dc7b01aa99fa4b893eeb6b62f8cd27/raw/fb4dae8f42bc6aea22b2566084d01fa0de845e7c/logo.svg
+curl -sLO https://gist.githubusercontent.com/bacongobbler/48dc7b01aa99fa4b893eeb6b62f8cd27/raw/fb4dae8f42bc6aea22b2566084d01fa0de845e7c/config.json
+curl -sLO https://www.fermyon.com/favicon.ico
+mv styles.css /home/ubuntu/hippo/linux-x64/wwwroot/
+mv config.json favicon.ico logo.svg /home/ubuntu/hippo/linux-x64/wwwroot/assets/
 
 # -----------------------------------------------------------------------------
 # Configure deps
