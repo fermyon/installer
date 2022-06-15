@@ -99,6 +99,14 @@ case "${OSTYPE}" in
     ;;
 esac
 
+# Required until hippo's healthz endpoint returns 404 when not ready.
+# Ref: https://github.com/fermyon/installer/pull/50
+echo 'Waiting for application to be accessible'
+HIPPO_URL="http://hippo.local.fermyon.link"
+while ! curl -s "${HIPPO_URL}/healthz"| grep -q "Healthy";  do
+  sleep 1
+done
+
 echo
 echo "Dashboards"
 echo "----------"
