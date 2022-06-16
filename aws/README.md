@@ -32,7 +32,6 @@ is enabled, apps will be provided with https URLs and TLS certs courtesy LE.
 
 - The [terraform CLI](https://learn.hashicorp.com/tutorials/terraform/install-cli#install-terraform)
 
-- The [Spin CLI](https://spin.fermyon.dev/quickstart)
 
 # Resources deployed
 
@@ -98,26 +97,20 @@ Let's Encrypt may incur a rate limit on your domain. Create the A record for *.e
 making sure it points to the Elastic IP's public address.
 See https://letsencrypt.org/docs/staging-environment/#rate-limits for more details.
 
-# Interacting with Fermyon
+## Environment setup
 
-Once this example has been deployed, you're ready to start building and deploying applications
-on Fermyon.
+When Terraform finishes provisioning, it will supply URL and username/password
+values for Hippo and Bindle, which will be needed to deploy your first
+application.
 
-For in-depth guides, follow the [Spin documentation](https://spin.fermyon.dev/) or
-[Hippo documentation](https://docs.hippofactory.dev/) to get started.
-
-## Example flow
-
-Here's an example flow once `terraform apply` completes.
-
-First, export pertinent environment variables using the `environment` output:
+Set your environment up in one go using the `environment` output:
 
 ```console
 $(terraform output -raw environment)
 ```
 
-This will export the following environment variables, for use by the CLIs and example
-commands below:
+This will export values into your shell for the following environment
+variables:
 
   - `DNS_DOMAIN`
   - `HIPPO_USERNAME`
@@ -125,57 +118,9 @@ commands below:
   - `HIPPO_URL`
   - `BINDLE_URL`
 
-Next, you're ready to log in to Hippo, create a new Spin app and deploy to Hippo.
 
-```console
-$ hippo login
-Logged in as admin
-
-$ spin templates install --git https://github.com/fermyon/spin
-Copying remote template source
-Installing template redis-rust...
-Installing template http-rust...
-Installing template http-go...
-Installing template redis-go...
-Installed 4 template(s)
-
-+---------------------------------------------------+
-| Name         Description                          |
-+===================================================+
-| http-go      HTTP request handler using (Tiny)Go  |
-| http-rust    HTTP request handler using Rust      |
-| redis-go     Redis message handler using (Tiny)Go |
-| redis-rust   Redis message handler using Rust     |
-+---------------------------------------------------+
-
-$ spin new http-rust myapp
-Project description: My first Fermyon app
-HTTP base: /
-HTTP path: /hello
-
-$ cd myapp/
-
-$ spin build
-<build output omitted>
-
-$ spin deploy
-Successfully deployed application!
-```
-
-You can then hit your app's served route (`/hello`) via its URL.
-
-The default structure for an app's URL on Hippo is `http(s)://<channel name>.<app name>.hippo.<domain>`.
-When deploying with `spin deploy`, the app name is used for the hippo channel name as well.
-
-You can also find the app URL by navigating to the Hippo dashboard (`$HIPPO_URL`), loggging in
-with the `$HIPPO_USERNAME` and `$HIPPO_PASSWORD` values and then clicking on the app page.
-
-Here's what the URL looks like based on the example above:
-
-```console
-$ curl http://myapp.myapp.hippo.${DNS_DOMAIN}/hello
-Hello, Fermyon
-```
+Now you're ready to start building and deploying applications on Fermyon!
+Follow the [Deploying to Fermyon](../deploy.md) guide for the next steps.
 
 ## Cleaning up
 
