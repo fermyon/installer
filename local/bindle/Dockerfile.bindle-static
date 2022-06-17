@@ -1,0 +1,25 @@
+# Build with buster to support running on oldish releases
+FROM rust:1.61-slim-buster as build
+
+# Prepare build environment
+RUN apt-get update && apt-get install -y wget libssl-dev pkg-config make perl clang
+
+# Fetch bindle source
+WORKDIR /usr/src/bindle
+RUN wget https://github.com/deislabs/bindle/archive/refs/tags/v0.8.0.tar.gz
+RUN tar xf v0.8.0.tar.gz
+WORKDIR bindle-0.8.0
+RUN cargo update
+
+# Link openssl statically to support Ubuntu 22.04+
+RUN cargo install cargo-edit
+RUN cargo add openssl@0.10 +vendored
+
+RUN cargo build \
+        --release \
+        --all-features \
+        # Not sure why this is necessary...
+        --features tokio-util/codec
+
+FROM scratch as artifact
+COPY --from=build /usr/src/bindle/bindle-0.8.0/target/release/bindle-server /
