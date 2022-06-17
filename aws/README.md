@@ -1,4 +1,4 @@
-# AWS Quick Start
+# AWS README
 
 This is a Quick Start example to deploy Fermyon on AWS using Terraform.
 
