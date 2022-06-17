@@ -1,7 +1,7 @@
 variable "instance_name" {
   description = "The name of the EC2 instance; should be unique if multiple are launched in the same region"
   type        = string
-  default     = "fermyon-hashistack"
+  default     = "fermyon"
 }
 
 variable "instance_type" {
