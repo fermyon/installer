@@ -10,6 +10,7 @@ require() {
 
 require consul
 require nomad
+require spin
 
 cleanup() {
   echo
