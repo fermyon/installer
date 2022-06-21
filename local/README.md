@@ -11,6 +11,7 @@ The environment is ephemeral and will not persist any data.
 
 - [Nomad](https://www.nomadproject.io/docs/install)
 - [Consul](https://www.consul.io/docs/install)
+- [spin](https://github.com/fermyon/spin)
 
 # How to Deploy
 
