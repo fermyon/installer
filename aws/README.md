@@ -37,14 +37,18 @@ is enabled, apps will be provided with https URLs and TLS certs courtesy LE.
 
 This example creates the following resources in the provided AWS account:
   - 1 EC2 instance (default size: `t2.small`)
+    - Name: `${var.instance_name}`
   - 1 Elastic IP address (associated with instance)
+    - Name: `${var.instance_name}-eip`
     - This is useful as it won't change with instance reboots and is a known
       value for constructing Hippo and Bindle URLs
-  - 1 custom security group using the default VPC with:
+  - 1 custom security group using the default VPC
+    - Name: `${var.instance_name}-security-group`
     - Inbound connections allowed for ports 22, 80 and 443
       - see `var.allowed_inbound_cidr_blocks` for allowed origin IP addresses
     - All outbound connections allowed
   - 1 SSH keypair
+    - Name: `${var.instance_name}_ssh_key_pair`
     - see `var.allowed_ssh_cidr_blocks` for allowed origin IP addresses
 
 # Security disclaimer
@@ -117,7 +121,6 @@ variables:
   - `HIPPO_PASSWORD`
   - `HIPPO_URL`
   - `BINDLE_URL`
-
 
 Now you're ready to start building and deploying applications on Fermyon!
 Follow the [Deploying to Fermyon](../deploy.md) guide for the next steps.
