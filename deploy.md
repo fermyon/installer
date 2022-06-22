@@ -69,8 +69,8 @@ Hello, Fermyon
 
 _Note: in some scenarios, the app may not be immediately reachable. For
 instance, app routing (via Traefik) may still be pending, or the app itself may
-require some time to launch and pass health checks. During this time, you may
-encounter `502 Bad Gateway` or `404 Not Found` response codes on requests._
+require a few seconds to launch and pass health checks. During this time, you
+may encounter `502 Bad Gateway` or `404 Not Found` response codes on requests._
 
 You can also find the app URL by navigating to the Hippo dashboard (`$HIPPO_URL`), loggging in
 with the `$HIPPO_USERNAME` and `$HIPPO_PASSWORD` values and then clicking on the app page.
