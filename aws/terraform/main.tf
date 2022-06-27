@@ -23,6 +23,10 @@ locals {
 
   hippo_version    = "v0.17.0"
   hippo_checksum   = "2a9690cd8546108fbd27a9f0c4898d1c2c171a76219803290b526e40da1c3211"
+
+  common_tags = {
+    FermyonInstallation = var.instance_name
+  }
 }
 
 # -----------------------------------------------------------------------------
@@ -61,9 +65,12 @@ data "aws_vpc" "default" {
 resource "aws_eip" "lb" {
   vpc = true
 
-  tags = {
-    Name = "${var.instance_name}-eip"
-  }
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "${var.instance_name}-eip"
+    }
+  )
 }
 
 resource "aws_eip_association" "lb" {
@@ -134,9 +141,12 @@ resource "aws_instance" "ec2" {
 
   vpc_security_group_ids = [aws_security_group.ec2.id]
 
-  tags = {
-    Name = var.instance_name
-  }
+  tags = merge(
+    local.common_tags,
+    {
+      Name = var.instance_name
+    }
+  )
 }
 
 # -----------------------------------------------------------------------------
@@ -147,9 +157,12 @@ resource "aws_security_group" "ec2" {
   name_prefix = var.instance_name
   vpc_id      = data.aws_vpc.default.id
 
-  tags = {
-    Name = "${var.instance_name}-security-group"
-  }
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "${var.instance_name}-security-group"
+    }
+  )
 
   lifecycle {
     create_before_destroy = true
@@ -233,6 +246,8 @@ resource "tls_private_key" "ec2_ssh_key" {
 resource "aws_key_pair" "ec2_ssh_key_pair" {
   key_name   = "${var.instance_name}_ssh_key_pair"
   public_key = tls_private_key.ec2_ssh_key.public_key_openssh
+
+  tags = local.common_tags
 }
 
 # -----------------------------------------------------------------------------

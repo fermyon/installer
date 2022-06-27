@@ -40,6 +40,11 @@ output "hippo_admin_password" {
   sensitive   = true
 }
 
+output "common_tags" {
+  description = "All applicable AWS resources are tagged with these values"
+  value       = local.common_tags
+}
+
 output "environment" {
   description = "Get environment config by running: $(terraform output -raw environment)"
   sensitive   = true
