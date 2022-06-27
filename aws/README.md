@@ -51,6 +51,12 @@ This example creates the following resources in the provided AWS account:
     - Name: `${var.instance_name}_ssh_key_pair`
     - see `var.allowed_ssh_cidr_blocks` for allowed origin IP addresses
 
+> All resources are tagged with a common set of tags, in addition to any
+resource-specific tags that might be defined. This enables
+[searching for resources based on tags](https://docs.aws.amazon.com/ARG/latest/userguide/tag-editor.html)
+and can be helpful if manual cleanup is necessary.
+To see these applied tags, run `terraform output common_tags`.
+
 # Security disclaimer
 
 By default, the allowed inbound and SSH CIDR block is `0.0.0.0/0` aka The Entire Internet.
