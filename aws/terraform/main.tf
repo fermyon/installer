@@ -124,6 +124,8 @@ resource "aws_instance" "ec2" {
 
       bindle_version          = local.bindle_version,
       bindle_checksum         = local.bindle_checksum,
+      bindle_auth_username    = var.bindle_auth_username,
+      bindle_auth_password    = random_password.bindle_auth_password.result
 
       spin_version            = local.spin_version,
       spin_checksum           = local.spin_checksum,
@@ -255,6 +257,16 @@ resource "aws_key_pair" "ec2_ssh_key_pair" {
 # -----------------------------------------------------------------------------
 
 resource "random_password" "hippo_admin_password" {
+  length           = 22
+  special          = true
+  override_special = "!#%&*-_=+<>:?"
+}
+
+# -----------------------------------------------------------------------------
+# Bindle auth password
+# -----------------------------------------------------------------------------
+
+resource "random_password" "bindle_auth_password" {
   length           = 22
   special          = true
   override_special = "!#%&*-_=+<>:?"

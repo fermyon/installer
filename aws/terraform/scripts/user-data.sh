@@ -28,6 +28,7 @@ cd /tmp
 
 ## Install misc utilities
 sudo apt-get update && sudo apt-get install -y \
+  apache2-utils \
   curl \
   unzip
 
@@ -111,6 +112,9 @@ sudo chmod +x run_servers.sh
 export HIPPO_ADMIN_USERNAME='${hippo_admin_username}'
 export HIPPO_ADMIN_PASSWORD='${hippo_admin_password}'
 export HIPPO_REGISTRATION_MODE='${hippo_registration_mode}'
+
+export BINDLE_AUTH_USERNAME='${bindle_auth_username}'
+export BINDLE_AUTH_PASSWORD='${bindle_auth_password}'
 
 export DNS_ZONE='${dns_zone}'
 export ENABLE_LETSENCRYPT='${enable_letsencrypt}'

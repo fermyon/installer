@@ -68,3 +68,9 @@ variable "hippo_registration_mode" {
     error_message = "The Hippo registration mode must be 'Open', 'Closed' or 'AdministratorOnly'."
   }
 }
+
+variable "bindle_auth_username" {
+  description = "Basic auth username for Bindle"
+  type        = string
+  default     = "admin"
+}

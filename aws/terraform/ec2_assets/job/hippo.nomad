@@ -39,6 +39,17 @@ variable "admin_password" {
   default     = null
 }
 
+variable "bindle_auth_username" {
+  type        = string
+  description = "Basic auth username for Bindle"
+}
+
+variable "bindle_auth_password" {
+  type        = string
+  description = "Basic auth password for Bindle"
+}
+
+
 job "hippo" {
   datacenters = ["dc1"]
   type        = "service"
@@ -104,7 +115,7 @@ job "hippo" {
         # Database__Driver            = "postgresql"
         # ConnectionStrings__Database = "Host=localhost;Username=postgres;Password=postgres;Database=hippo"
 
-        ConnectionStrings__Bindle     = "server=${var.bindle_url}"
+        ConnectionStrings__Bindle    = "server=${var.bindle_url};username=${var.bindle_auth_username};password=${var.bindle_auth_password}"
 
         Nomad__Traefik__Entrypoint   = var.enable_letsencrypt ? "websecure" : "web"
         Nomad__Traefik__CertResolver = var.enable_letsencrypt ? "letsencrypt-tls" : ""
