@@ -40,6 +40,17 @@ output "hippo_admin_password" {
   sensitive   = true
 }
 
+output "bindle_auth_username" {
+  description = "Basic auth username for Bindle"
+  value       = var.bindle_auth_username
+}
+
+output "bindle_auth_password" {
+  description = "Basic auth password for Bindle"
+  value       = random_password.bindle_auth_password.result
+  sensitive   = true
+}
+
 output "common_tags" {
   description = "All applicable AWS resources are tagged with these values"
   value       = local.common_tags
@@ -54,6 +65,8 @@ export HIPPO_URL=${var.enable_letsencrypt ? "https" : "http"}://hippo.${var.dns_
 export HIPPO_USERNAME=${var.hippo_admin_username}
 export HIPPO_PASSWORD=${random_password.hippo_admin_password.result}
 export BINDLE_URL=${var.enable_letsencrypt ? "https" : "http"}://bindle.${var.dns_host == "sslip.io" ? "${aws_eip.lb.public_ip}.${var.dns_host}" : var.dns_host}/v1
+export BINDLE_USERNAME=${var.bindle_auth_username}
+export BINDLE_PASSWORD=${random_password.bindle_auth_password.result}
 
 EOM
 }

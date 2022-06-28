@@ -10,6 +10,11 @@ variable "enable_letsencrypt" {
   description = "Enable cert provisioning via Let's Encrypt"
 }
 
+variable "basic_auth_string" {
+  type        = string
+  description = "Basic auth string (e.g. <username>:<bcrypt hash of password>) for Bindle"
+}
+
 job "bindle" {
   datacenters = ["dc1"]
   type        = "service"
@@ -53,10 +58,15 @@ job "bindle" {
         RUST_LOG = "error,bindle=debug"
       }
 
+      template {
+        data = var.basic_auth_string
+        destination = "${NOMAD_TASK_DIR}/htpasswd"
+      }
+
       config {
         command = "bindle-server"
         args = [
-          "--unauthenticated",
+          "--htpasswd-file", "${NOMAD_TASK_DIR}/htpasswd",
           "--address", "${NOMAD_ADDR_http}",
           # PRO TIP: set to an absolute directory to persist bindles when job
           # is restarted

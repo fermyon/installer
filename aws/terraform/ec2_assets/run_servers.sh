@@ -95,6 +95,7 @@ echo "Starting bindle job..."
 nomad run \
   -var domain="bindle.${DNS_ZONE}" \
   -var enable_letsencrypt="${ENABLE_LETSENCRYPT}" \
+  -var basic_auth_string="$(htpasswd -bBn ${BINDLE_AUTH_USERNAME} ${BINDLE_AUTH_PASSWORD} | tr -d '\n')" \
   job/bindle.nomad
 
 echo "Starting hippo job..."
@@ -104,6 +105,8 @@ nomad run \
   -var admin_username="${HIPPO_ADMIN_USERNAME}" \
   -var admin_password="${HIPPO_ADMIN_PASSWORD}" \
   -var bindle_url="${PLATFORM_PROTOCOL}://bindle.${DNS_ZONE}/v1" \
+  -var bindle_auth_username="${BINDLE_AUTH_USERNAME}" \
+  -var bindle_auth_password="${BINDLE_AUTH_PASSWORD}" \
   -var enable_letsencrypt="${ENABLE_LETSENCRYPT}" \
   job/hippo.nomad
 
