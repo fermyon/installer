@@ -62,12 +62,17 @@ job "hippo" {
       }
 
       artifact {
-        source = "https://gist.githubusercontent.com/bacongobbler/48dc7b01aa99fa4b893eeb6b62f8cd27/raw/fb4dae8f42bc6aea22b2566084d01fa0de845e7c/styles.css"
+        source = "https://raw.githubusercontent.com/fermyon/hippo-themes/439601f899c989b04ecdb3c37e08053a3e713bdf/css/styles.css"
       }
 
       artifact {
-        source = "https://gist.githubusercontent.com/bacongobbler/48dc7b01aa99fa4b893eeb6b62f8cd27/raw/fb4dae8f42bc6aea22b2566084d01fa0de845e7c/logo.svg"
-        destination = "local/${var.os}-x64/wwwroot/assets/"
+        source = "https://raw.githubusercontent.com/fermyon/hippo-themes/439601f899c989b04ecdb3c37e08053a3e713bdf/css/avatar.a979e1d6.png"
+      }
+
+      artifact {
+        source = "https://raw.githubusercontent.com/fermyon/hippo-themes/main/src/images/fermyon.svg"
+        destination = "local/${var.os}-x64/wwwroot/assets/logo.svg"
+        mode = "file"
       }
 
       artifact {
@@ -98,7 +103,7 @@ job "hippo" {
 
       config {
         command = "bash"
-        args    = ["-c", "mv local/styles.css local/${var.os}-x64/wwwroot/ && mv local/config.json local/${var.os}-x64/wwwroot/assets/ && cd local/${var.os}-x64 && ./Hippo.Web"]
+        args    = ["-c", "mv local/styles.css local/avatar.a979e1d6.png local/${var.os}-x64/wwwroot/ && mv local/config.json local/${var.os}-x64/wwwroot/assets/ && cd local/${var.os}-x64 && ./Hippo.Web"]
       }
     }
   }

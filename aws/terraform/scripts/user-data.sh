@@ -87,11 +87,13 @@ mkdir -p /home/ubuntu/hippo
 sudo tar zxvf hippo-server-linux-x64.tar.gz -C /home/ubuntu/hippo
 
 echo "Install Hippo Theme - Fermyon"
-curl -sLO https://gist.githubusercontent.com/bacongobbler/48dc7b01aa99fa4b893eeb6b62f8cd27/raw/fb4dae8f42bc6aea22b2566084d01fa0de845e7c/styles.css
-curl -sLO https://gist.githubusercontent.com/bacongobbler/48dc7b01aa99fa4b893eeb6b62f8cd27/raw/fb4dae8f42bc6aea22b2566084d01fa0de845e7c/logo.svg
-curl -sLO https://gist.githubusercontent.com/bacongobbler/48dc7b01aa99fa4b893eeb6b62f8cd27/raw/fb4dae8f42bc6aea22b2566084d01fa0de845e7c/config.json
-curl -sLO https://www.fermyon.com/favicon.ico
-mv styles.css /home/ubuntu/hippo/linux-x64/wwwroot/
+curl -sLO https://raw.githubusercontent.com/fermyon/hippo-themes/439601f899c989b04ecdb3c37e08053a3e713bdf/css/styles.css
+curl -sLO https://raw.githubusercontent.com/fermyon/hippo-themes/439601f899c989b04ecdb3c37e08053a3e713bdf/css/avatar.a979e1d6.png
+curl -sLo logo.svg https://raw.githubusercontent.com/fermyon/hippo-themes/439601f899c989b04ecdb3c37e08053a3e713bdf/src/images/fermyon.svg
+curl -sLO https://raw.githubusercontent.com/fermyon/hippo-themes/439601f899c989b04ecdb3c37e08053a3e713bdf/src/images/icon/favicon.ico
+echo '{"title":"Fermyon"}' > config.json
+
+mv styles.css avatar.a979e1d6.png /home/ubuntu/hippo/linux-x64/wwwroot/
 mv config.json favicon.ico logo.svg /home/ubuntu/hippo/linux-x64/wwwroot/assets/
 
 # -----------------------------------------------------------------------------
