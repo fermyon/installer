@@ -62,15 +62,15 @@ job "hippo" {
       }
 
       artifact {
-        source = "https://raw.githubusercontent.com/fermyon/hippo-themes/d5cd3c53035baf6d8ccd4b75f143eff4c58d4c2f/css/styles.css"
+        source = "https://raw.githubusercontent.com/fermyon/hippo-themes/main/css/styles.css"
       }
 
       artifact {
-        source = "https://raw.githubusercontent.com/fermyon/hippo-themes/d5cd3c53035baf6d8ccd4b75f143eff4c58d4c2f/css/avatar.a979e1d6.png"
+        source = "https://raw.githubusercontent.com/fermyon/hippo-themes/main/css/avatar.a979e1d6.png"
       }
 
       artifact {
-        source = "https://raw.githubusercontent.com/fermyon/hippo-themes/d5cd3c53035baf6d8ccd4b75f143eff4c58d4c2f/js/index.js"
+        source = "https://raw.githubusercontent.com/fermyon/hippo-themes/main/js/index.js"
       }
 
       artifact {
