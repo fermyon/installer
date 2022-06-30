@@ -50,4 +50,4 @@ deploying your applications.
 After installing Fermyon in your preferred environment, you are ready to deploy
 your first application.
 
-Follow the [deploy guide](../deploy.md) to get started.
+Follow the [deploy guide](deploy.md) to get started.
