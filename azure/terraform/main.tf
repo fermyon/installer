@@ -42,7 +42,7 @@ resource "azurerm_resource_group" "rg" {
 }
 
 # -----------------------------------------------------------------------------
-# Azure VNET, Subnet, IP
+# Azure VNET, Subnet, IP, DNS Zone
 # -----------------------------------------------------------------------------
 resource "azurerm_virtual_network" "default" {
     name = "default"
@@ -73,17 +73,41 @@ resource "azurerm_network_security_group" "defaultnsg" {
     location = azurerm_resource_group.rg.location
     resource_group_name = azurerm_resource_group.rg.name
 
-    # security_rule {
-    #     name = "SSH"
-    #     priority = 1001
-    #     direction = "Inbound"
-    #     access = "Allow"
-    #     protocol = "Tcp"
-    #     source_port_range = "*"
-    #     destination_port_range = "22"
-    #     source_address_prefix = "*"
-    #     destination_address_prefix = "*"
-    # }
+    security_rule {
+        name = "SSH"
+        priority = 1001
+        direction = "Inbound"
+        access = "Allow"
+        protocol = "Tcp"
+        source_port_range = "*"
+        destination_port_range = "22"
+        source_address_prefix = "*"
+        destination_address_prefix = "*"
+    }
+
+    security_rule {
+        name = "HTTP"
+        priority = 1002
+        direction = "Inbound"
+        access = "Allow"
+        protocol = "Tcp"
+        source_port_range = "*"
+        destination_port_range = "80"
+        source_address_prefix = "*"
+        destination_address_prefix = "*"
+    }
+
+    security_rule {
+        name = "HTTPS"
+        priority = 1003
+        direction = "Inbound"
+        access = "Allow"
+        protocol = "Tcp"
+        source_port_range = "*"
+        destination_port_range = "443"
+        source_address_prefix = "*"
+        destination_address_prefix = "*"
+    }
 }
 
 
@@ -155,17 +179,17 @@ resource "azurerm_linux_virtual_machine" "defaultVM" {
 
     source_image_reference {
       publisher = "Canonical"
-      offer = "UbuntuServer"
-      sku = "18.04-LTS"
+      offer = "0001-com-ubuntu-server-focal"
+      sku = "20_04-lts-gen2"
       version = "latest"
     }
 
     computer_name = "myfermyonvm"
-    admin_username = "fermyon"
+    admin_username = "ubuntu"
     disable_password_authentication = true
 
     admin_ssh_key {
-      username = "fermyon"
+      username = "ubuntu"
       public_key = tls_private_key.ssh.public_key_openssh
     }
 
@@ -173,41 +197,55 @@ resource "azurerm_linux_virtual_machine" "defaultVM" {
       storage_account_uri = azurerm_storage_account.defaultstorage.primary_blob_endpoint
     }
 
+    # Add config files, scripts, Nomad jobs to host
+    provisioner "file" {
+        source      = "${path.module}/assets/"
+        destination = "/home/ubuntu"
 
-#     user_data = templatefile("${path.module}/scripts/user-data.sh",
-#     {
-#       dns_zone                = var.dns_host == "sslip.io" ? "testfermyon.${var.dns_host}" : var.dns_host,
-#       enable_letsencrypt      = var.enable_letsencrypt,
+        connection {
+            host        = azurerm_public_ip.defaultIp.ip_address
+            type        = "ssh"
+            user        = "ubuntu"
+            private_key = tls_private_key.ssh.private_key_pem
+        }
+    }
 
-#       nomad_version           = local.nomad_version,
-#       nomad_checksum          = local.nomad_checksum,
+    user_data = base64encode(templatefile("${path.module}/scripts/user-data.sh",
+    {
+      dns_zone                = var.dns_host == "sslip.io" ? "${azurerm_public_ip.defaultIp.ip_address}.${var.dns_host}" : var.dns_host,
+      enable_letsencrypt      = var.enable_letsencrypt,
 
-#       consul_version          = local.consul_version,
-#       consul_checksum         = local.consul_checksum,
+      nomad_version           = local.nomad_version,
+      nomad_checksum          = local.nomad_checksum,
 
-#       vault_version           = local.vault_version,
-#       vault_checksum          = local.vault_checksum,
+      consul_version          = local.consul_version,
+      consul_checksum         = local.consul_checksum,
 
-#       traefik_version         = local.traefik_version,
-#       traefik_checksum        = local.traefik_checksum,
+      vault_version           = local.vault_version,
+      vault_checksum          = local.vault_checksum,
 
-#       bindle_version          = local.bindle_version,
-#       bindle_checksum         = local.bindle_checksum,
+      traefik_version         = local.traefik_version,
+      traefik_checksum        = local.traefik_checksum,
 
-#       spin_version            = local.spin_version,
-#       spin_checksum           = local.spin_checksum,
+      bindle_version          = local.bindle_version,
+      bindle_checksum         = local.bindle_checksum,
 
-#       hippo_version           = local.hippo_version,
-#       hippo_checksum          = local.hippo_checksum,
-#       hippo_registration_mode = var.hippo_registration_mode
-#       hippo_admin_username    = var.hippo_admin_username
-#       # TODO: ideally, Hippo will support ingestion of the admin password via
-#       # its hash (eg bcrypt, which Traefik and Bindle both support) - then we can remove
-#       # the need to pass the raw value downstream to the scripts, Nomad job, ecc.
-#       hippo_admin_password    = random_password.hippo_admin_password.result,
-#     }
-#   )
+      spin_version            = local.spin_version,
+      spin_checksum           = local.spin_checksum,
+
+      hippo_version           = local.hippo_version,
+      hippo_checksum          = local.hippo_checksum,
+      hippo_registration_mode = var.hippo_registration_mode
+      hippo_admin_username    = var.hippo_admin_username
+      # TODO: ideally, Hippo will support ingestion of the admin password via
+      # its hash (eg bcrypt, which Traefik and Bindle both support) - then we can remove
+      # the need to pass the raw value downstream to the scripts, Nomad job, ecc.
+      hippo_admin_password    = random_password.hippo_admin_password.result,
+    }
+  ))
 }
+
+
 
 # -----------------------------------------------------------------------------
 # Hippo admin password
