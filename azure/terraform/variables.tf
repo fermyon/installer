@@ -1,3 +1,15 @@
+variable "vm_name" {
+  description = "The name of the virtual machine; should be unique if multiple are launched in the same region"
+  type        = string
+  default     = "fermyon"
+}
+
+variable "vm_sku" {
+  description = "The Azure SKU for the virtual machine. (Default: Standard_DS1_v2)"
+  type        = string
+  default     = "Standard_DS1_v2"
+}
+
 variable "resource_group_name_prefix" {
   default       = "rg"
   description   = "Prefix of the resource group name that's combined with a random ID so name is unique in your Azure subscription."

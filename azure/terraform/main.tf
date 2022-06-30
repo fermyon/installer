@@ -45,21 +45,21 @@ resource "azurerm_resource_group" "rg" {
 # Azure VNET, Subnet, IP, DNS Zone
 # -----------------------------------------------------------------------------
 resource "azurerm_virtual_network" "default" {
-    name = "default"
+    name = "${var.vm_name}-vnet"
     address_space = ["10.0.0.0/16"]
     location = azurerm_resource_group.rg.location
     resource_group_name = azurerm_resource_group.rg.name
 }
 
 resource "azurerm_subnet" "defaultsubnet" {
-    name = "defaultsubnet"
+    name = "${var.vm_name}-subnet"
     resource_group_name = azurerm_resource_group.rg.name
     virtual_network_name = azurerm_virtual_network.default.name
     address_prefixes = ["10.0.1.0/24"]
 }
 
 resource "azurerm_public_ip" "defaultIp" {
-    name = "defaultIP"
+    name = "${var.vm_name}-pip"
     location = azurerm_resource_group.rg.location
     resource_group_name = azurerm_resource_group.rg.name
     allocation_method = "Static"
@@ -69,7 +69,7 @@ resource "azurerm_public_ip" "defaultIp" {
 # Azure NSG
 # -----------------------------------------------------------------------------
 resource "azurerm_network_security_group" "defaultnsg" {
-    name = "defaultNSG"
+    name = "${var.vm_name}-nsg"
     location = azurerm_resource_group.rg.location
     resource_group_name = azurerm_resource_group.rg.name
 
@@ -115,7 +115,7 @@ resource "azurerm_network_security_group" "defaultnsg" {
 # Azure Network Interface
 # -----------------------------------------------------------------------------
 resource "azurerm_network_interface" "defaultnic" {
-    name = "defaultnic"
+    name = "${var.vm_name}-nic"
     location = azurerm_resource_group.rg.location
     resource_group_name = azurerm_resource_group.rg.name
 
@@ -161,15 +161,24 @@ resource "tls_private_key" "ssh" {
     rsa_bits = 4096
 }
 
+resource "azurerm_ssh_public_key" "ssh_public_key" {
+    name = "${var.vm_name}_ssh_public_key"
+    resource_group_name = azurerm_resource_group.rg.name
+    location = azurerm_resource_group.rg.location
+    public_key = tls_private_key.ssh.public_key_openssh
+
+    tags = local.common_tags
+}
+
 # -----------------------------------------------------------------------------
 # Azure VM
 # -----------------------------------------------------------------------------
 resource "azurerm_linux_virtual_machine" "defaultVM" {
-    name = "defaultVM"
+    name = var.vm_name
     location = azurerm_resource_group.rg.location
     resource_group_name = azurerm_resource_group.rg.name
     network_interface_ids = [azurerm_network_interface.defaultnic.id]
-    size = "Standard_DS1_v2"
+    size = var.vm_sku
 
     os_disk {
       name = "myFermyonDisk"
