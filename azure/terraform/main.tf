@@ -73,17 +73,17 @@ resource "azurerm_network_security_group" "defaultnsg" {
     location = azurerm_resource_group.rg.location
     resource_group_name = azurerm_resource_group.rg.name
 
-    security_rule {
-        name = "SSH"
-        priority = 1001
-        direction = "Inbound"
-        access = "Allow"
-        protocol = "Tcp"
-        source_port_range = "*"
-        destination_port_range = "22"
-        source_address_prefix = "*"
-        destination_address_prefix = "*"
-    }
+    # security_rule {
+    #     name = "SSH"
+    #     priority = 1001
+    #     direction = "Inbound"
+    #     access = "Allow"
+    #     protocol = "Tcp"
+    #     source_port_range = "*"
+    #     destination_port_range = "22"
+    #     source_address_prefix = "*"
+    #     destination_address_prefix = "*"
+    # }
 }
 
 
@@ -98,7 +98,7 @@ resource "azurerm_network_interface" "defaultnic" {
     ip_configuration {
         name                          = "defaultNicConfig"
         subnet_id                     = azurerm_subnet.defaultsubnet.id
-        private_ip_address_allocation = "Static"
+        private_ip_address_allocation = "Dynamic"
         public_ip_address_id          = azurerm_public_ip.defaultIp.id
   }
 }
@@ -166,7 +166,7 @@ resource "azurerm_linux_virtual_machine" "defaultVM" {
 
     admin_ssh_key {
       username = "fermyon"
-      public_key = tls_private_key.ssh.private_key_openssh
+      public_key = tls_private_key.ssh.public_key_openssh
     }
 
     boot_diagnostics {
@@ -174,39 +174,39 @@ resource "azurerm_linux_virtual_machine" "defaultVM" {
     }
 
 
-    user_data = templatefile("${path.module}/scripts/user-data.sh",
-    {
-      dns_zone                = var.dns_host == "sslip.io" ? "${azurerm_public_ip.defaultIp.fqdn}.${var.dns_host}" : var.dns_host,
-      enable_letsencrypt      = var.enable_letsencrypt,
+#     user_data = templatefile("${path.module}/scripts/user-data.sh",
+#     {
+#       dns_zone                = var.dns_host == "sslip.io" ? "testfermyon.${var.dns_host}" : var.dns_host,
+#       enable_letsencrypt      = var.enable_letsencrypt,
 
-      nomad_version           = local.nomad_version,
-      nomad_checksum          = local.nomad_checksum,
+#       nomad_version           = local.nomad_version,
+#       nomad_checksum          = local.nomad_checksum,
 
-      consul_version          = local.consul_version,
-      consul_checksum         = local.consul_checksum,
+#       consul_version          = local.consul_version,
+#       consul_checksum         = local.consul_checksum,
 
-      vault_version           = local.vault_version,
-      vault_checksum          = local.vault_checksum,
+#       vault_version           = local.vault_version,
+#       vault_checksum          = local.vault_checksum,
 
-      traefik_version         = local.traefik_version,
-      traefik_checksum        = local.traefik_checksum,
+#       traefik_version         = local.traefik_version,
+#       traefik_checksum        = local.traefik_checksum,
 
-      bindle_version          = local.bindle_version,
-      bindle_checksum         = local.bindle_checksum,
+#       bindle_version          = local.bindle_version,
+#       bindle_checksum         = local.bindle_checksum,
 
-      spin_version            = local.spin_version,
-      spin_checksum           = local.spin_checksum,
+#       spin_version            = local.spin_version,
+#       spin_checksum           = local.spin_checksum,
 
-      hippo_version           = local.hippo_version,
-      hippo_checksum          = local.hippo_checksum,
-      hippo_registration_mode = var.hippo_registration_mode
-      hippo_admin_username    = var.hippo_admin_username
-      # TODO: ideally, Hippo will support ingestion of the admin password via
-      # its hash (eg bcrypt, which Traefik and Bindle both support) - then we can remove
-      # the need to pass the raw value downstream to the scripts, Nomad job, ecc.
-      hippo_admin_password    = random_password.hippo_admin_password.result,
-    }
-  )
+#       hippo_version           = local.hippo_version,
+#       hippo_checksum          = local.hippo_checksum,
+#       hippo_registration_mode = var.hippo_registration_mode
+#       hippo_admin_username    = var.hippo_admin_username
+#       # TODO: ideally, Hippo will support ingestion of the admin password via
+#       # its hash (eg bcrypt, which Traefik and Bindle both support) - then we can remove
+#       # the need to pass the raw value downstream to the scripts, Nomad job, ecc.
+#       hippo_admin_password    = random_password.hippo_admin_password.result,
+#     }
+#   )
 }
 
 # -----------------------------------------------------------------------------
