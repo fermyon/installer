@@ -33,91 +33,143 @@ locals {
 # Azure Resource Group Defaults
 # -----------------------------------------------------------------------------
 resource "random_pet" "rg-name" {
-    prefix = var.resource_group_name_prefix
+    prefix                          = var.resource_group_name_prefix
 }
 
 resource "azurerm_resource_group" "rg" {
-    name = random_pet.rg-name.id
-    location = var.resource_group_location
+    name                            = random_pet.rg-name.id
+    location                        = var.resource_group_location
 }
 
 # -----------------------------------------------------------------------------
 # Azure VNET, Subnet, IP, DNS Zone
 # -----------------------------------------------------------------------------
 resource "azurerm_virtual_network" "default" {
-    name = "${var.vm_name}-vnet"
-    address_space = ["10.0.0.0/16"]
-    location = azurerm_resource_group.rg.location
-    resource_group_name = azurerm_resource_group.rg.name
+    name                            = "${var.vm_name}-vnet"
+    address_space                   = ["10.0.0.0/16"]
+    location                        = azurerm_resource_group.rg.location
+    resource_group_name             = azurerm_resource_group.rg.name
 }
 
 resource "azurerm_subnet" "defaultsubnet" {
-    name = "${var.vm_name}-subnet"
-    resource_group_name = azurerm_resource_group.rg.name
-    virtual_network_name = azurerm_virtual_network.default.name
-    address_prefixes = ["10.0.1.0/24"]
+    name                            = "${var.vm_name}-subnet"
+    resource_group_name             = azurerm_resource_group.rg.name
+    virtual_network_name            = azurerm_virtual_network.default.name
+    address_prefixes                = ["10.0.1.0/24"]
 }
 
 resource "azurerm_public_ip" "defaultIp" {
-    name = "${var.vm_name}-pip"
-    location = azurerm_resource_group.rg.location
-    resource_group_name = azurerm_resource_group.rg.name
-    allocation_method = "Static"
+    name                            = "${var.vm_name}-pip"
+    location                        = azurerm_resource_group.rg.location
+    resource_group_name             = azurerm_resource_group.rg.name
+    allocation_method               = "Static"
 }
 
 # -----------------------------------------------------------------------------
 # Azure NSG
 # -----------------------------------------------------------------------------
 resource "azurerm_network_security_group" "defaultnsg" {
-    name = "${var.vm_name}-nsg"
-    location = azurerm_resource_group.rg.location
-    resource_group_name = azurerm_resource_group.rg.name
-
-    security_rule {
-        name = "SSH"
-        priority = 1001
-        direction = "Inbound"
-        access = "Allow"
-        protocol = "Tcp"
-        source_port_range = "*"
-        destination_port_range = "22"
-        source_address_prefix = "*"
-        destination_address_prefix = "*"
-    }
-
-    security_rule {
-        name = "HTTP"
-        priority = 1002
-        direction = "Inbound"
-        access = "Allow"
-        protocol = "Tcp"
-        source_port_range = "*"
-        destination_port_range = "80"
-        source_address_prefix = "*"
-        destination_address_prefix = "*"
-    }
-
-    security_rule {
-        name = "HTTPS"
-        priority = 1003
-        direction = "Inbound"
-        access = "Allow"
-        protocol = "Tcp"
-        source_port_range = "*"
-        destination_port_range = "443"
-        source_address_prefix = "*"
-        destination_address_prefix = "*"
-    }
+    name                            = "${var.vm_name}-nsg"
+    location                        = azurerm_resource_group.rg.location
+    resource_group_name             = azurerm_resource_group.rg.name
 }
 
+resource "azurerm_network_security_rule" "allow_ssh_inbound" {
+    count                           = length(var.allowed_ssh_cidr_blocks) > 0 ? 1 : 0
+    name                            = "Allow SSH Inbound"
+    priority                        = 1001
+    direction                       = "Inbound"
+    access                          = "Allow"
+    protocol                        = "Tcp"
+    source_port_range               = "*"
+    destination_port_range          = "22"
+    source_address_prefixes         = var.allowed_ssh_cidr_blocks
+    destination_address_prefix      = "*"
+    resource_group_name             = azurerm_resource_group.rg.name
+    network_security_group_name     = azurerm_network_security_group.defaultnsg.name
+}
+
+resource "azurerm_network_security_rule" "allow_traefik_app_http_inbound" {
+    count                           = !var.enable_letsencrypt && length(var.allowed_inbound_cidr_blocks) > 0 ? 1 : 0
+    name                            = "Allow Traefik App HTTP Inbound"
+    priority                        = 1002
+    direction                       = "Inbound"
+    access                          = "Allow"
+    protocol                        = "Tcp"
+    source_port_range               = "*"
+    destination_port_range          = "80"
+    source_address_prefixes         = var.allowed_inbound_cidr_blocks
+    destination_address_prefix      = "*"
+    resource_group_name             = azurerm_resource_group.rg.name
+    network_security_group_name     = azurerm_network_security_group.defaultnsg.name
+}
+
+resource "azurerm_network_security_rule" "allow_traefik_app_https_inbound" {
+    count                           = var.enable_letsencrypt && length(var.allowed_inbound_cidr_blocks) > 0 ? 1 : 0
+    name                            = "Allow Traefik App HTTPS Inbound"
+    priority                        = 1003
+    direction                       = "Inbound"
+    access                          = "Allow"
+    protocol                        = "Tcp"
+    source_port_range               = "*"
+    destination_port_range          = "443"
+    source_address_prefixes         = var.allowed_inbound_cidr_blocks
+    destination_address_prefix      = "*"
+    resource_group_name             = azurerm_resource_group.rg.name
+    network_security_group_name     = azurerm_network_security_group.defaultnsg.name
+}
+
+resource "azurerm_network_security_rule" "allow_nomad_api_inbound" {
+    count                           = var.allow_inbound_http_nomad && length(var.allowed_inbound_cidr_blocks) > 0 ? 1 : 0
+    name                            = "Allow Nomad API inbound"
+    priority                        = 1004
+    direction                       = "Inbound"
+    access                          = "Allow"
+    protocol                        = "Tcp"
+    source_port_range               = "*"
+    destination_port_range          = "4646"
+    source_address_prefixes         = var.allowed_inbound_cidr_blocks
+    destination_address_prefix      = "*"
+    resource_group_name             = azurerm_resource_group.rg.name
+    network_security_group_name     = azurerm_network_security_group.defaultnsg.name
+}
+
+resource "azurerm_network_security_rule" "allow_consul_api_inbound" {
+    count                           = var.allow_inbound_http_consul && length(var.allowed_inbound_cidr_blocks) > 0 ? 1 : 0
+    name                            = "Allow Consul API inbound"
+    priority                        = 1005
+    direction                       = "Inbound"
+    access                          = "Allow"
+    protocol                        = "Tcp"
+    source_port_range               = "*"
+    destination_port_range          = "8500"
+    source_address_prefixes         = var.allowed_inbound_cidr_blocks
+    destination_address_prefix      = "*"
+    resource_group_name             = azurerm_resource_group.rg.name
+    network_security_group_name     = azurerm_network_security_group.defaultnsg.name
+}
+
+resource "azurerm_network_security_rule" "allow_all_outbound" {
+    name                            = "Allow All Outbound"
+    priority                        = 1001
+    direction                       = "Outbound"
+    access                          = "Allow"
+    protocol                        = "Tcp"
+    source_port_range               = "*"
+    destination_port_range          = "*"
+    source_address_prefixes         = var.allow_outbound_cidr_blocks
+    destination_address_prefix      = "*"
+    resource_group_name             = azurerm_resource_group.rg.name
+    network_security_group_name     = azurerm_network_security_group.defaultnsg.name
+}
 
 # -----------------------------------------------------------------------------
 # Azure Network Interface
 # -----------------------------------------------------------------------------
 resource "azurerm_network_interface" "defaultnic" {
-    name = "${var.vm_name}-nic"
-    location = azurerm_resource_group.rg.location
-    resource_group_name = azurerm_resource_group.rg.name
+    name                            = "${var.vm_name}-nic"
+    location                        = azurerm_resource_group.rg.location
+    resource_group_name             = azurerm_resource_group.rg.name
 
     ip_configuration {
         name                          = "defaultNicConfig"
@@ -129,8 +181,8 @@ resource "azurerm_network_interface" "defaultnic" {
 
 # Connect SG to NIC
 resource "azurerm_network_interface_security_group_association" "defaultnicsg" {
-    network_interface_id = azurerm_network_interface.defaultnic.id
-    network_security_group_id = azurerm_network_security_group.defaultnsg.id
+    network_interface_id            = azurerm_network_interface.defaultnic.id
+    network_security_group_id       = azurerm_network_security_group.defaultnsg.id
 }
 
 # -----------------------------------------------------------------------------
@@ -146,11 +198,11 @@ resource "random_id" "randomID" {
 }
 
 resource "azurerm_storage_account" "defaultstorage" {
-    name = "diag${random_id.randomID.hex}"
-    location = azurerm_resource_group.rg.location
-    resource_group_name = azurerm_resource_group.rg.name
-    account_tier = "Standard"
-    account_replication_type = "LRS"
+    name                            = "diag${random_id.randomID.hex}"
+    location                        = azurerm_resource_group.rg.location
+    resource_group_name             = azurerm_resource_group.rg.name
+    account_tier                    = "Standard"
+    account_replication_type        = "LRS"
 }
 
 # -----------------------------------------------------------------------------
@@ -162,10 +214,10 @@ resource "tls_private_key" "ssh" {
 }
 
 resource "azurerm_ssh_public_key" "ssh_public_key" {
-    name = "${var.vm_name}_ssh_public_key"
-    resource_group_name = azurerm_resource_group.rg.name
-    location = azurerm_resource_group.rg.location
-    public_key = tls_private_key.ssh.public_key_openssh
+    name                            = "${var.vm_name}_ssh_public_key"
+    resource_group_name             = azurerm_resource_group.rg.name
+    location                        = azurerm_resource_group.rg.location
+    public_key                      = tls_private_key.ssh.public_key_openssh
 
     tags = local.common_tags
 }
@@ -174,82 +226,82 @@ resource "azurerm_ssh_public_key" "ssh_public_key" {
 # Azure VM
 # -----------------------------------------------------------------------------
 resource "azurerm_linux_virtual_machine" "defaultVM" {
-    name = var.vm_name
-    location = azurerm_resource_group.rg.location
-    resource_group_name = azurerm_resource_group.rg.name
-    network_interface_ids = [azurerm_network_interface.defaultnic.id]
-    size = var.vm_sku
+    name                            = var.vm_name
+    location                        = azurerm_resource_group.rg.location
+    resource_group_name             = azurerm_resource_group.rg.name
+    network_interface_ids           = [azurerm_network_interface.defaultnic.id]
+    size                            = var.vm_sku
 
     os_disk {
-      name = "myFermyonDisk"
-      caching = "ReadWrite"
-      storage_account_type = "Premium_LRS"
+      name                          = "${var.vm_name}-disk"
+      caching                       = "ReadWrite"
+      storage_account_type          = "Premium_LRS"
     }
 
     source_image_reference {
-      publisher = "Canonical"
-      offer = "0001-com-ubuntu-server-focal"
-      sku = "20_04-lts-gen2"
-      version = "latest"
+      publisher                     = "Canonical"
+      offer                         = "0001-com-ubuntu-server-focal"
+      sku                           = "20_04-lts-gen2"
+      version                       = "latest"
     }
 
-    computer_name = "myfermyonvm"
-    admin_username = "ubuntu"
+    computer_name                   = "myfermyonvm"
+    admin_username                  = "ubuntu"
     disable_password_authentication = true
 
     admin_ssh_key {
-      username = "ubuntu"
-      public_key = tls_private_key.ssh.public_key_openssh
+      username                      = "ubuntu"
+      public_key                    = tls_private_key.ssh.public_key_openssh
     }
 
     boot_diagnostics {
-      storage_account_uri = azurerm_storage_account.defaultstorage.primary_blob_endpoint
+      storage_account_uri           = azurerm_storage_account.defaultstorage.primary_blob_endpoint
     }
 
     # Add config files, scripts, Nomad jobs to host
     provisioner "file" {
-        source      = "${path.module}/assets/"
-        destination = "/home/ubuntu"
+        source                      = "${path.module}/assets/"
+        destination                 = "/home/ubuntu"
 
         connection {
-            host        = azurerm_public_ip.defaultIp.ip_address
-            type        = "ssh"
-            user        = "ubuntu"
-            private_key = tls_private_key.ssh.private_key_pem
+            host                    = azurerm_public_ip.defaultIp.ip_address
+            type                    = "ssh"
+            user                    = "ubuntu"
+            private_key             = tls_private_key.ssh.private_key_pem
         }
     }
 
     user_data = base64encode(templatefile("${path.module}/scripts/user-data.sh",
     {
-      dns_zone                = var.dns_host == "sslip.io" ? "${azurerm_public_ip.defaultIp.ip_address}.${var.dns_host}" : var.dns_host,
-      enable_letsencrypt      = var.enable_letsencrypt,
+      dns_zone                      = var.dns_host == "sslip.io" ? "${azurerm_public_ip.defaultIp.ip_address}.${var.dns_host}" : var.dns_host,
+      enable_letsencrypt            = var.enable_letsencrypt,
 
-      nomad_version           = local.nomad_version,
-      nomad_checksum          = local.nomad_checksum,
+      nomad_version                 = local.nomad_version,
+      nomad_checksum                = local.nomad_checksum,
 
-      consul_version          = local.consul_version,
-      consul_checksum         = local.consul_checksum,
+      consul_version                = local.consul_version,
+      consul_checksum               = local.consul_checksum,
 
-      vault_version           = local.vault_version,
-      vault_checksum          = local.vault_checksum,
+      vault_version                 = local.vault_version,
+      vault_checksum                = local.vault_checksum,
 
-      traefik_version         = local.traefik_version,
-      traefik_checksum        = local.traefik_checksum,
+      traefik_version               = local.traefik_version,
+      traefik_checksum              = local.traefik_checksum,
 
-      bindle_version          = local.bindle_version,
-      bindle_checksum         = local.bindle_checksum,
+      bindle_version                = local.bindle_version,
+      bindle_checksum               = local.bindle_checksum,
 
-      spin_version            = local.spin_version,
-      spin_checksum           = local.spin_checksum,
+      spin_version                  = local.spin_version,
+      spin_checksum                 = local.spin_checksum,
 
-      hippo_version           = local.hippo_version,
-      hippo_checksum          = local.hippo_checksum,
-      hippo_registration_mode = var.hippo_registration_mode
-      hippo_admin_username    = var.hippo_admin_username
+      hippo_version                 = local.hippo_version,
+      hippo_checksum                = local.hippo_checksum,
+      hippo_registration_mode       = var.hippo_registration_mode
+      hippo_admin_username          = var.hippo_admin_username
       # TODO: ideally, Hippo will support ingestion of the admin password via
       # its hash (eg bcrypt, which Traefik and Bindle both support) - then we can remove
       # the need to pass the raw value downstream to the scripts, Nomad job, ecc.
-      hippo_admin_password    = random_password.hippo_admin_password.result,
+      hippo_admin_password          = random_password.hippo_admin_password.result,
     }
   ))
 }
@@ -261,7 +313,7 @@ resource "azurerm_linux_virtual_machine" "defaultVM" {
 # -----------------------------------------------------------------------------
 
 resource "random_password" "hippo_admin_password" {
-  length           = 22
-  special          = true
-  override_special = "!#%&*-_=+<>:?"
+  length                            = 22
+  special                           = true
+  override_special                  = "!#%&*-_=+<>:?"
 }
