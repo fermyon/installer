@@ -11,13 +11,13 @@ variable "vm_sku" {
 }
 
 variable "resource_group_name_prefix" {
-  default       = "rg"
-  description   = "Prefix of the resource group name that's combined with a random ID so name is unique in your Azure subscription."
+  default     = "rg"
+  description = "Prefix of the resource group name that's combined with a random ID so name is unique in your Azure subscription."
 }
 
 variable "resource_group_location" {
-  default       = "eastus"
-  description   = "Location of the resource group."
+  default     = "eastus"
+  description = "Location of the resource group."
 }
 
 variable "enable_letsencrypt" {
@@ -33,13 +33,13 @@ variable "dns_host" {
 }
 
 variable "allowed_ssh_cidr_blocks" {
-  description = "A list of CIDR-formatted IP address ranges from which the EC2 Instance will allow SSH connections"
+  description = "A list of CIDR-formatted IP address ranges from which the Azure VM will allow SSH connections"
   type        = list(string)
   default     = ["0.0.0.0/0"]
 }
 
 variable "allowed_inbound_cidr_blocks" {
-  description = "A list of CIDR-formatted IP address ranges from which the EC2 Instance will allow connections"
+  description = "A list of CIDR-formatted IP address ranges from which the Azure VM will allow connections"
   type        = list(string)
   default     = ["0.0.0.0/0"]
 }

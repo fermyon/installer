@@ -3,7 +3,7 @@
 This guide illustrates how to install Fermyon on Azure using Terraform.
 
 As such, this is intended solely for evaluation and/or demo scenarios, i.e.
-*not* for production.
+_not_ for production.
 
 All Hashistack (Nomad, Consul, Vault), Traefik and Fermyon platform processes run
 without any redundancy on a single Azure VM instance. There is no data backup for any
@@ -17,52 +17,57 @@ is enabled, apps will be provided with https URLs and TLS certs courtesy LE.
 # Prerequisites
 
 - An Azure account
-  - The credentials needed by Terraform can be provided via env vars:
+
+  Terraform, by default, will use the subscription you are signed into via the [Azure CLI.](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli). For more information, check out Terraform's Docs for [Authentication using the Azure CLI](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/azure_cli)
+
+  - The credentials needed by Terraform can also be provided via env vars:
+
     ```console
       export ARM_SUBSCRIPTION_ID=xxx
       export ARM_TENANT_ID=xxx
       export ARM_CLIENT_ID=xxx
       export ARM_CLIENT_SECRET=xxx
     ```
+
   - Or via local [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
     configuration (see `~/.azure/config`)
 
 - The [terraform CLI](https://learn.hashicorp.com/tutorials/terraform/install-cli#install-terraform)
 
-
 # Resources deployed
 
 This example creates the following resources in the provided Azure account:
-  - 1 Azure VM (default size: `Standard_DS1_v2`)
-    - Name: `${var.vm_name}`
-  - 1 Public IP address (associated with virtual machine)
-    - Name: `${var.vm_name}-pip`
-    - This is useful as it won't change with virtual machine reboots and is a known
-      value for constructing Hippo and Bindle URLs
-  - 1 Network Security Group
-    - Name: `${var.vm_name}-nsg`
-    - Inbound connections allowed for ports 22, 80 and 443
-      - see `var.allowed_inbound_cidr_blocks` for allowed origin IP addresses
-    - All outbound connections allowed
-  - 1 Virtual Network
-    - Name: `${var.vm_name}-vnet`
-  - 1 Regular Network Interface (associated with virtual machine and public IP address)
-    - Name: `${var.vm_name}-nic`
-  - 1 Storage Account
-    - Name: `${var.vm_name}-storage`
-    - This is used to store diagnostics logs for the VM
-  - 1 Disk
-    - Name: `${var.vm_name}-disk`
-    - Attached to virtual machine
-  - 1 SSH Key
-    - Name: `${var.vm_name}_ssh_public_key`
-    - see `var.allowed_ssh_cidr_blocks` for allowed origin IP addresses
+
+- 1 Azure VM (default size: `Standard_DS1_v2`)
+  - Name: `${var.vm_name}`
+- 1 Public IP address (associated with virtual machine)
+  - Name: `${var.vm_name}-pip`
+  - This is useful as it won't change with virtual machine reboots and is a known
+    value for constructing Hippo and Bindle URLs
+- 1 Network Security Group
+  - Name: `${var.vm_name}-nsg`
+  - Inbound connections allowed for ports 22, 80 and 443
+    - see `var.allowed_inbound_cidr_blocks` for allowed origin IP addresses
+  - All outbound connections allowed
+- 1 Virtual Network
+  - Name: `${var.vm_name}-vnet`
+- 1 Regular Network Interface (associated with virtual machine and public IP address)
+  - Name: `${var.vm_name}-nic`
+- 1 Storage Account
+  - Name: `${var.vm_name}-storage`
+  - This is used to store diagnostics logs for the VM
+- 1 Disk
+  - Name: `${var.vm_name}-disk`
+  - Attached to virtual machine
+- 1 SSH Key
+  - Name: `${var.vm_name}_ssh_public_key`
+  - see `var.allowed_ssh_cidr_blocks` for allowed origin IP addresses
 
 > All resources are tagged with a common set of tags, in addition to any
-resource-specific tags that might be defined. This enables
-[searching for resources based on tags](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/tag-support)
-and can be helpful if manual cleanup is necessary.
-To see these applied tags, run `terraform output common_tags`.
+> resource-specific tags that might be defined. This enables
+> [searching for resources based on tags](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/tag-support)
+> and can be helpful if manual cleanup is necessary.
+> To see these applied tags, run `terraform output common_tags`.
 
 # Security disclaimer
 
@@ -110,7 +115,7 @@ terraform apply -var='dns_host=example.com'
 ```
 
 Quick disclaimer when Let's Encrypt is enabled: if the DNS record does not propagate in time,
-Let's Encrypt may incur a rate limit on your domain. Create the A record for *.example.com as soon as you can,
+Let's Encrypt may incur a rate limit on your domain. Create the A record for \*.example.com as soon as you can,
 making sure it points to the Azure IP's public address.
 See https://letsencrypt.org/docs/staging-environment/#rate-limits for more details.
 
@@ -129,11 +134,11 @@ $(terraform output -raw environment)
 This will export values into your shell for the following environment
 variables:
 
-  - `DNS_DOMAIN`
-  - `HIPPO_USERNAME`
-  - `HIPPO_PASSWORD`
-  - `HIPPO_URL`
-  - `BINDLE_URL`
+- `DNS_DOMAIN`
+- `HIPPO_USERNAME`
+- `HIPPO_PASSWORD`
+- `HIPPO_URL`
+- `BINDLE_URL`
 
 Now you're ready to start building and deploying applications on Fermyon!
 Follow the [Deploying to Fermyon](../deploy.md) guide for the next steps.
@@ -153,7 +158,7 @@ terraform destroy
 ```console
 terraform output -raw tls_private_key > /tmp/tls_private_key.pem
 chmod 0600 /tmp/tls_private_key.pem
-ssh -i /tmp/tls_private_key.pem ubuntu@$(terraform output -raw tls_private_key)
+ssh -i /tmp/tls_private_key.pem ubuntu@$(terraform output -raw public_ip_address)
 ```
 
 Once on the virtual machine, output from user-data.sh can be checked like so:

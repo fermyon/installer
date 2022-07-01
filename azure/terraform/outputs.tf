@@ -22,7 +22,7 @@ output "dns_host" {
 
 output "bindle_url" {
   description = "The URL for the Bindle server"
-  value       =  "${var.enable_letsencrypt ? "https" : "http"}://bindle.${var.dns_host == "sslip.io" ? "${azurerm_public_ip.defaultIp.ip_address}.${var.dns_host}" : var.dns_host}/v1"
+  value       = "${var.enable_letsencrypt ? "https" : "http"}://bindle.${var.dns_host == "sslip.io" ? "${azurerm_public_ip.defaultIp.ip_address}.${var.dns_host}" : var.dns_host}/v1"
 }
 
 output "hippo_url" {
