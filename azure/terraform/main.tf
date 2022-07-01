@@ -42,7 +42,7 @@ resource "azurerm_resource_group" "rg" {
 }
 
 # -----------------------------------------------------------------------------
-# Azure VNET, Subnet, IP, DNS Zone
+# Azure VNET, Subnet, IP
 # -----------------------------------------------------------------------------
 resource "azurerm_virtual_network" "default" {
     name                            = "${var.vm_name}-vnet"
