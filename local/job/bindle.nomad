@@ -59,7 +59,7 @@ job "bindle" {
 
       artifact {
         source = lookup({
-          linux="https://raw.githubusercontent.com/fermyon/installer/9fca2d7b641440cef0f75d38ace9cd3128b5a8a3/local/bindle/bindle-server"
+          linux="https://raw.githubusercontent.com/fermyon/installer/93008bc6461076da5c5f7f99cffc3e68b1955a17/local/bindle/bindle-server"
         }, var.os, "https://bindle.blob.core.windows.net/releases/bindle-v0.8.0-${var.os}-${var.arch}.tar.gz")
       }
 
