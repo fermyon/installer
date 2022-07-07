@@ -8,9 +8,13 @@ require() {
   fi
 }
 
-require consul
 require nomad
 require spin
+
+if ! nomad version | grep -q 'Nomad v1.3'; then
+  echo 'Nomad version 1.3 is required'
+  exit 1
+fi
 
 cleanup() {
   echo
@@ -34,22 +38,10 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 ${SUDO} rm -rf ./data
 mkdir -p log
 
-echo "Starting consul..."
-consul agent -dev \
-  -config-file ./etc/consul.hcl \
-  -bootstrap-expect 1 \
-  &>log/consul.log &
-
-echo "Waiting for consul..."
-while ! consul members &>/dev/null; do
-  sleep 2
-done
-
 echo "Starting nomad..."
 ${SUDO} nomad agent -dev \
   -config ./etc/nomad.hcl \
   -data-dir "${PWD}/data/nomad" \
-  -consul-address "127.0.0.1:8500" \
   &>log/nomad.log &
 
 echo "Waiting for nomad..."
@@ -111,7 +103,6 @@ done
 echo
 echo "Dashboards"
 echo "----------"
-echo "Consul:  http://localhost:8500"
 echo "Nomad:   http://localhost:4646"
 echo "Traefik: http://localhost:8081"
 echo "Hippo:   http://hippo.local.fermyon.link"
@@ -120,7 +111,6 @@ echo "Logs are stored in ./log"
 echo
 echo "Export these into your shell"
 echo
-echo "    export CONSUL_HTTP_ADDR=http://localhost:8500"
 echo "    export NOMAD_ADDR=http://localhost:4646"
 echo "    export BINDLE_URL=http://bindle.local.fermyon.link/v1"
 echo "    export HIPPO_URL=http://hippo.local.fermyon.link"

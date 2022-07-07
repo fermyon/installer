@@ -38,20 +38,14 @@ job "bindle" {
     }
 
     service {
-      name = "bindle"
-      port = "http"
+      name     = "bindle"
+      provider = "nomad"
+      port     = "http"
 
       tags = [
         "traefik.enable=true",
         "traefik.http.routers.bindle.rule=Host(`bindle.${var.domain}`)",
       ]
-
-      check {
-        name     = "alive"
-        type     = "tcp"
-        interval = "10s"
-        timeout  = "2s"
-      }
     }
 
     task "bindle" {
@@ -59,7 +53,7 @@ job "bindle" {
 
       artifact {
         source = lookup({
-          linux="https://raw.githubusercontent.com/fermyon/installer/9fca2d7b641440cef0f75d38ace9cd3128b5a8a3/local/bindle/bindle-server"
+          linux = "https://raw.githubusercontent.com/fermyon/installer/9fca2d7b641440cef0f75d38ace9cd3128b5a8a3/local/bindle/bindle-server"
         }, var.os, "https://bindle.blob.core.windows.net/releases/bindle-v0.8.0-${var.os}-${var.arch}.tar.gz")
       }
 

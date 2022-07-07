@@ -9,9 +9,8 @@ The environment is ephemeral and will not persist any data.
 
 # Prerequisites
 
-- [Nomad](https://www.nomadproject.io/docs/install)
-- [Consul](https://www.consul.io/docs/install)
-- [spin](https://github.com/fermyon/spin)
+- [Nomad](https://www.nomadproject.io/docs/install) v1.3 or later
+- [Spin](https://github.com/fermyon/spin)
 
 # How to Deploy
 
