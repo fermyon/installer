@@ -17,22 +17,15 @@ job "traefik" {
     }
 
     service {
-      name = "traefik"
-
-      check {
-        name     = "alive"
-        type     = "tcp"
-        port     = "http"
-        interval = "10s"
-        timeout  = "2s"
-      }
+      name     = "traefik"
+      provider = "nomad"
     }
 
     task "traefik" {
       driver = "raw_exec"
 
       artifact {
-        source = "https://github.com/traefik/traefik/releases/download/v2.7.1/traefik_v2.7.1_${attr.kernel.name}_${attr.cpu.arch}.tar.gz"
+        source = "https://github.com/traefik/traefik/releases/download/v2.8.0/traefik_v2.8.0_${attr.kernel.name}_${attr.cpu.arch}.tar.gz"
       }
 
       config {
@@ -54,14 +47,9 @@ job "traefik" {
     dashboard = true
     insecure  = true
 
-# Enable Consul Catalog configuration backend.
-[providers.consulCatalog]
-    prefix           = "traefik"
-    exposedByDefault = false
-
-    [providers.consulCatalog.endpoint]
-      address = "127.0.0.1:8500"
-      scheme  = "http"
+[providers.nomad]
+  [providers.nomad.endpoint]
+    address = "http://127.0.0.1:4646"
 EOF
 
         destination = "local/traefik.toml"

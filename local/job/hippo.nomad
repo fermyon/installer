@@ -38,20 +38,14 @@ job "hippo" {
     }
 
     service {
-      name = "hippo"
-      port = "http"
+      name     = "hippo"
+      provider = "nomad"
+      port     = "http"
 
       tags = [
         "traefik.enable=true",
         "traefik.http.routers.hippo.rule=Host(`hippo.${var.domain}`)",
       ]
-
-      check {
-        name     = "alive"
-        type     = "tcp"
-        interval = "10s"
-        timeout  = "2s"
-      }
     }
 
     task "hippo" {
@@ -66,7 +60,7 @@ job "hippo" {
       }
 
       artifact {
-        source = "https://gist.githubusercontent.com/bacongobbler/48dc7b01aa99fa4b893eeb6b62f8cd27/raw/fb4dae8f42bc6aea22b2566084d01fa0de845e7c/logo.svg"
+        source      = "https://gist.githubusercontent.com/bacongobbler/48dc7b01aa99fa4b893eeb6b62f8cd27/raw/fb4dae8f42bc6aea22b2566084d01fa0de845e7c/logo.svg"
         destination = "local/${var.os}-x64/wwwroot/assets/"
       }
 
@@ -75,14 +69,15 @@ job "hippo" {
       }
 
       artifact {
-        source = "https://www.fermyon.com/favicon.ico"
+        source      = "https://www.fermyon.com/favicon.ico"
         destination = "local/${var.os}-x64/wwwroot/assets/"
       }
 
       env {
-        Hippo__PlatformDomain = var.domain
-        Scheduler__Driver     = "nomad"
-        Nomad__Driver         = "raw_exec"
+        Hippo__PlatformDomain  = var.domain
+        Scheduler__Driver      = "nomad"
+        Nomad__Driver          = "raw_exec"
+        Nomad__ServiceProvider = "nomad"
 
         Database__Driver            = "sqlite"
         ConnectionStrings__Database = "Data Source=hippo.db;Cache=Shared"
