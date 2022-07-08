@@ -76,7 +76,7 @@ fi
 echo "Starting nomad..."
 nomad agent -dev \
   -config ./etc/nomad.hcl \
-  -network-interface eth0 \
+  -network-interface $(ip -o -4 route show to default | awk '{print $5}') \
   -data-dir "${PWD}/data/nomad" \
   -consul-address "${IP_ADDRESS}:8500" \
   -vault-address http://127.0.0.1:8200 \
@@ -99,6 +99,7 @@ nomad run \
 
 echo "Starting hippo job..."
 nomad run \
+  -var hippo_folder="${HIPPO_FOLDER}" \
   -var domain="hippo.${DNS_ZONE}" \
   -var registration_mode="${HIPPO_REGISTRATION_MODE}" \
   -var admin_username="${HIPPO_ADMIN_USERNAME}" \

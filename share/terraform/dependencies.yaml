@@ -1,0 +1,27 @@
+nomad:
+  version: "1.3.1"
+  checksum: "d16dcea9fdfab3846e749307e117e33a07f0d8678cf28cc088637055e34e5b37"
+
+consul: 
+  version: "1.12.1"
+  checksum: "8d138267701fc3502dc6b01beb08ae8fac969022ab867f61bc945af38686ecc3"
+
+vault:
+  version: "1.10.3"
+  checksum: "c99aeefd30dbeb406bfbd7c80171242860747b3bf9fa377e7a9ec38531727f31"
+
+traefik:
+  version: "v2.7.0"
+  checksum: "348e444c390156a3d17613e421ec80e23874e2388ef0cc22d7ad00a5b9c7f21a"
+
+bindle:
+  version: "v0.8.0"
+  checksum: "26f68ab5a03c7e6f0c8b83fb199ca77244c834f25247b9a62312eb7a89dba93c"
+
+spin:
+  version: "v0.2.0"
+  checksum: "f5c25a7f754ef46dfc4b2361d6f34d40564768a60d7bc0d183dc26fe1bdcfae0"
+
+hippo:
+  version: "v0.17.0"
+  checksum: "2a9690cd8546108fbd27a9f0c4898d1c2c171a76219803290b526e40da1c3211"
