@@ -3,26 +3,7 @@
 # -----------------------------------------------------------------------------
 
 locals {
-  nomad_version    = "1.3.1"
-  nomad_checksum   = "d16dcea9fdfab3846e749307e117e33a07f0d8678cf28cc088637055e34e5b37"
-
-  consul_version   = "1.12.1"
-  consul_checksum  = "8d138267701fc3502dc6b01beb08ae8fac969022ab867f61bc945af38686ecc3"
-
-  vault_version    = "1.10.3"
-  vault_checksum   = "c99aeefd30dbeb406bfbd7c80171242860747b3bf9fa377e7a9ec38531727f31"
-
-  traefik_version  = "v2.7.0"
-  traefik_checksum = "348e444c390156a3d17613e421ec80e23874e2388ef0cc22d7ad00a5b9c7f21a"
-
-  bindle_version   = "v0.8.0"
-  bindle_checksum  = "26f68ab5a03c7e6f0c8b83fb199ca77244c834f25247b9a62312eb7a89dba93c"
-
-  spin_version     = "v0.2.0"
-  spin_checksum    = "f5c25a7f754ef46dfc4b2361d6f34d40564768a60d7bc0d183dc26fe1bdcfae0"
-
-  hippo_version    = "v0.17.0"
-  hippo_checksum   = "2a9690cd8546108fbd27a9f0c4898d1c2c171a76219803290b526e40da1c3211"
+  dependencies = yamldecode(file("../../share/terraform/dependencies.yaml"))
 
   common_tags = {
     FermyonInstallation = var.instance_name
@@ -94,7 +75,7 @@ resource "aws_instance" "ec2" {
 
   # Add config files, scripts, Nomad jobs to host
   provisioner "file" {
-    source      = "${path.module}/ec2_assets/"
+    source      = "../../share/terraform/vm_assets/"
     destination = "/home/ubuntu"
 
     connection {
@@ -105,37 +86,38 @@ resource "aws_instance" "ec2" {
     }
   }
 
-  user_data = templatefile("${path.module}/scripts/user-data.sh",
+  user_data = templatefile("../../share/terraform/scripts/startup.sh",
     {
-      dns_zone                = var.dns_host == "sslip.io" ? "${aws_eip.lb.public_ip}.${var.dns_host}" : var.dns_host,
-      enable_letsencrypt      = var.enable_letsencrypt,
+      home_path          = "/home/ubuntu"
+      dns_zone           = var.dns_host == "sslip.io" ? "${aws_eip.lb.public_ip}.${var.dns_host}" : var.dns_host,
+      enable_letsencrypt = var.enable_letsencrypt,
 
-      nomad_version           = local.nomad_version,
-      nomad_checksum          = local.nomad_checksum,
+      nomad_version  = local.dependencies.nomad.version,
+      nomad_checksum = local.dependencies.nomad.checksum,
 
-      consul_version          = local.consul_version,
-      consul_checksum         = local.consul_checksum,
+      consul_version  = local.dependencies.consul.version,
+      consul_checksum = local.dependencies.consul.checksum,
 
-      vault_version           = local.vault_version,
-      vault_checksum          = local.vault_checksum,
+      vault_version  = local.dependencies.vault.version,
+      vault_checksum = local.dependencies.vault.checksum,
 
-      traefik_version         = local.traefik_version,
-      traefik_checksum        = local.traefik_checksum,
+      traefik_version  = local.dependencies.traefik.version,
+      traefik_checksum = local.dependencies.traefik.checksum,
 
-      bindle_version          = local.bindle_version,
-      bindle_checksum         = local.bindle_checksum,
+      bindle_version  = local.dependencies.bindle.version,
+      bindle_checksum = local.dependencies.bindle.checksum,
 
-      spin_version            = local.spin_version,
-      spin_checksum           = local.spin_checksum,
+      spin_version  = local.dependencies.spin.version,
+      spin_checksum = local.dependencies.spin.checksum,
 
-      hippo_version           = local.hippo_version,
-      hippo_checksum          = local.hippo_checksum,
+      hippo_version           = local.dependencies.hippo.version,
+      hippo_checksum          = local.dependencies.hippo.checksum,
       hippo_registration_mode = var.hippo_registration_mode
       hippo_admin_username    = var.hippo_admin_username
       # TODO: ideally, Hippo will support ingestion of the admin password via
       # its hash (eg bcrypt, which Traefik and Bindle both support) - then we can remove
       # the need to pass the raw value downstream to the scripts, Nomad job, ecc.
-      hippo_admin_password    = random_password.hippo_admin_password.result,
+      hippo_admin_password = random_password.hippo_admin_password.result,
     }
   )
 
@@ -239,8 +221,8 @@ resource "aws_security_group_rule" "allow_all_outbound" {
 # -----------------------------------------------------------------------------
 
 resource "tls_private_key" "ec2_ssh_key" {
-  algorithm   = "RSA"
-  rsa_bits    = "4096"
+  algorithm = "RSA"
+  rsa_bits  = "4096"
 }
 
 resource "aws_key_pair" "ec2_ssh_key_pair" {

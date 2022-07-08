@@ -1,3 +1,9 @@
+variable "hippo_folder" {
+  type        = string
+  default     = "/home/ubuntu/hippo/linux-x64"
+  description = "Hippo folder path"
+}
+
 variable "domain" {
   type        = string
   default     = "hippo.local.fermyon.link"
@@ -118,7 +124,7 @@ job "hippo" {
 
       config {
         command = "bash"
-        args    = ["-c", "cd /home/ubuntu/hippo/linux-x64 && ./Hippo.Web"]
+        args    = ["-c", "cd ${var.hippo_folder} && ./Hippo.Web"]
       }
     }
   }
