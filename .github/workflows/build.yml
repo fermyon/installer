@@ -1,0 +1,35 @@
+name: Build
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  docs:
+    runs-on: "ubuntu-latest"
+    env:
+      SPIN_VERSION: v0.4.0
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install bart
+        run: |
+          curl -LOs https://github.com/fermyon/bartholomew/releases/download/v0.3.0/bart
+          chmod +x bart
+          mv bart /usr/local/bin
+
+      - name: Install spin
+        run: |
+          curl -LOs https://github.com/fermyon/spin/releases/download/${SPIN_VERSION}/spin-${SPIN_VERSION}-linux-amd64.tar.gz
+          tar zxvf spin-${SPIN_VERSION}-linux-amd64.tar.gz -C /usr/local/bin
+          chmod +x /usr/local/bin/spin
+
+      - name: Navigate to docs directory
+        run: cd docs
+
+      - name: Check site content
+        run: npm run check-content
+
+      - name: Test site
+        run: npm run test-server
