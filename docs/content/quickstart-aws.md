@@ -2,7 +2,7 @@ title = "Running Fermyon on AWS"
 date = "2022-06-08T14:05:02.118466Z"
 
 [extra]
-url = "https://github.com/fermyon/fermyon.dev/blob/main/content/quickstart-aws.md"
+url = "https://github.com/fermyon/installer/blob/main/docs/content/quickstart-aws.md"
 ---
 
 Thank you for trying out the AWS installer of Fermyon! This document will guide

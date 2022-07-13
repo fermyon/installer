@@ -2,7 +2,7 @@ title = "The frictionless WebAssembly platform for writing microservices and web
 template = "main"
 date = "2022-06-08T00:22:56Z"
 [extra]
-url = "https://github.com/fermyon/fermyon.dev/blob/main/content/index.md"
+url = "https://github.com/fermyon/installer/blob/main/docs/content/index.md"
 ---
 
 With Fermyon, you can deploy your Spin applications onto a server in moments. For developers, it offers a rapid self-service cloud application platform (or Platform-as-a-Service). For DevOps, Fermyon provides orchestration, networking, service discovery, and a web UI for Spin applications.

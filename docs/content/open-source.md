@@ -2,7 +2,7 @@ title = "Open Source"
 date = "2022-06-08T14:05:02.118466Z"
 
 [extra]
-url = "https://github.com/fermyon/fermyon.dev/blob/main/content/open-source.md"
+url = "https://github.com/fermyon/installer/blob/main/docs/content/open-source.md"
 ---
 
 The Fermyon Platform would not be possible without the amazing open source
