@@ -25,11 +25,12 @@ jobs:
           tar zxvf spin-${SPIN_VERSION}-linux-amd64.tar.gz -C /usr/local/bin
           chmod +x /usr/local/bin/spin
 
-      - name: Navigate to docs directory
-        run: cd docs
-
       - name: Check site content
-        run: npm run check-content
+        run: |
+          cd docs
+          npm run check-content
 
       - name: Test site
-        run: npm run test-server
+        run: |
+          cd docs
+          npm run test-server

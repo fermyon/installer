@@ -2,7 +2,7 @@ title = "Running Fermyon locally"
 date = "2022-06-08T14:05:02.118466Z"
 
 [extra]
-url = "https://github.com/fermyon/fermyon.dev/blob/main/content/quickstart-local.md"
+url = "https://github.com/fermyon/installer/blob/main/docs/content/quickstart-local.md"
 ---
 
 Thank you for trying out the local installer of Fermyon! This document will guide
