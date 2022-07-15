@@ -41,7 +41,7 @@ mkdir -p log data/vault
 
 # https://www.nomadproject.io/docs/faq#q-how-to-connect-to-my-host-network-when-using-docker-desktop-windows-and-macos
 
-IP_ADDRESS=$(hostname -I | xargs)
+IP_ADDRESS=$(hostname -I | xargs | awk '{print $1}')
 
 echo "Starting consul..."
 consul agent -dev \
