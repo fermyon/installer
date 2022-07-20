@@ -18,7 +18,7 @@ is enabled, apps will be provided with https URLs and TLS certs courtesy LE.
 
 - An Azure account
 
-  Terraform, by default, will use the subscription you are signed into via the [Azure CLI.](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli). For more information, check out Terraform's Docs for [Authentication using the Azure CLI](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/azure_cli)
+  Terraform, by default, will use the subscription you are signed into via the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli). For more information, check out Terraform's Docs for [Authentication using the Azure CLI](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/azure_cli)
 
   - The credentials needed by Terraform can also be provided via env vars:
 
