@@ -18,8 +18,8 @@ locals {
   bindle_version  = "v0.8.0"
   bindle_checksum = "26f68ab5a03c7e6f0c8b83fb199ca77244c834f25247b9a62312eb7a89dba93c"
 
-  spin_version  = "v0.2.0"
-  spin_checksum = "f5c25a7f754ef46dfc4b2361d6f34d40564768a60d7bc0d183dc26fe1bdcfae0"
+  spin_version  = "v0.4.0"
+  spin_checksum = "0d8f087b751bb26c43bcc45dbe0e9283da189df73ea55140efc4e3958855a7d6"
 
   hippo_version  = "v0.17.0"
   hippo_checksum = "2a9690cd8546108fbd27a9f0c4898d1c2c171a76219803290b526e40da1c3211"

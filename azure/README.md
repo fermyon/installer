@@ -2,6 +2,8 @@
 
 This guide illustrates how to install Fermyon on Azure using Terraform.
 
+If you are more of a visual learner, you can also checkout the [Getting Started with Fermyon on Azure video](https://youtu.be/d0XX0L1wYc0). 
+
 As such, this is intended solely for evaluation and/or demo scenarios, i.e.
 _not_ for production.
 
