@@ -42,7 +42,7 @@ output "hippo_admin_password" {
 }
 
 output "common_tags" {
-  description = "All applicable AWS resources are tagged with these values"
+  description = "All applicable Azure resources are tagged with these values"
   value       = local.common_tags
 }
 
