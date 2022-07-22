@@ -206,7 +206,7 @@ traefik  service  50        running  2022-05-18T23:42:31Z
 ### Check Vault
 
 ```console
-ubuntu@ip-10-0-0-12:~$ vault status
+ubuntu@ip-10-0-0-12:~$ vault status -address http://127.0.0.1:8200
 Key             Value
 ---             -----
 Seal Type       shamir
