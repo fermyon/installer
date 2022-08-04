@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# NOTE(bacongobbler): nomad MUST run as root for the exec driver to work on Linux.
+# https://github.com/deislabs/hippo/blob/de73ae52d606c0a2351f90069e96acea831281bc/src/Infrastructure/Jobs/NomadJob.cs#L28
+# https://www.nomadproject.io/docs/drivers/exec#client-requirements
+case "$OSTYPE" in
+  linux*) SUDO="sudo --preserve-env=PATH" ;;
+  *) SUDO= ;;
+esac
+
 require() {
   if ! hash "$1" &>/dev/null; then
     echo "'$1' not found in PATH"
@@ -15,18 +23,10 @@ require spin
 cleanup() {
   echo
   echo "Shutting down services"
-  kill $(jobs -p)
+  $SUDO kill $(jobs -p)
   wait
 }
 trap cleanup EXIT
-
-# NOTE(bacongobbler): nomad MUST run as root for the exec driver to work on Linux.
-# https://github.com/deislabs/hippo/blob/de73ae52d606c0a2351f90069e96acea831281bc/src/Infrastructure/Jobs/NomadJob.cs#L28
-# https://www.nomadproject.io/docs/drivers/exec#client-requirements
-case "$OSTYPE" in
-  linux*) SUDO="sudo --preserve-env=PATH" ;;
-  *) SUDO= ;;
-esac
 
 # change to the directory of this script
 cd "$(dirname "${BASH_SOURCE[0]}")"
