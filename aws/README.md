@@ -23,8 +23,7 @@ is enabled, apps will be provided with https URLs and TLS certs courtesy LE.
       export AWS_SECRET_ACCESS_KEY=xxx
       export AWS_REGION=us-east-1
     ```
-  - Or via local [aws CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
-    configuration (see `~/.aws/config` and `~/.aws/credentials`)
+  - Or via local [AWS CLI configuration](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html)
 
   - _Note: If your AWS user is in a group that enforces MFA for all requests,
     see the following guide on [generating a session token](#generating-a-session-token-in-aws)
