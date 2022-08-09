@@ -21,8 +21,8 @@ locals {
   spin_version  = "v0.4.0"
   spin_checksum = "0d8f087b751bb26c43bcc45dbe0e9283da189df73ea55140efc4e3958855a7d6"
 
-  hippo_version  = "v0.17.0"
-  hippo_checksum = "2a9690cd8546108fbd27a9f0c4898d1c2c171a76219803290b526e40da1c3211"
+  hippo_version  = "v0.19.0"
+  hippo_checksum = "ec1619756897cbe4cae7789eee6787cf472cb14b439c00b9be0de1fea08a1a49"
 
   common_tags = {
     FermyonInstallation = "localtest"
