@@ -28,6 +28,44 @@ resource "google_compute_address" "lb" {
 }
 
 # -----------------------------------------------------------------------------
+# Cloud Storage Bucket for the vm_assets files
+# -----------------------------------------------------------------------------
+
+resource "random_id" "id" {
+	  byte_length = 8
+}
+
+resource "google_storage_bucket" "vm_assets" {
+  name          = "fermyon_vm_assets-${random_id.id.hex}"
+  location = var.region
+  force_destroy = true
+}
+
+resource "null_resource" "upload_folder_content" {
+
+ triggers = {
+   file_hashes = jsonencode({
+   for fn in fileset("../../share/terraform/vm_assets/", "**") :
+   fn => filesha256("../../share/terraform/vm_assets/${fn}")
+   })
+ }
+
+ provisioner "local-exec" {
+    command = "gsutil cp -r ../../share/terraform/vm_assets/* gs://${google_storage_bucket.vm_assets.name}/"
+ }
+
+ depends_on = [google_storage_bucket.vm_assets]
+}
+
+resource "google_storage_bucket_iam_binding" "binding" {
+  bucket = google_storage_bucket.vm_assets.name
+  role = "roles/storage.objectViewer"
+  members = [
+    "serviceAccount:${google_service_account.default.email}",
+  ]
+}
+
+# -----------------------------------------------------------------------------
 # VM instance config
 # -----------------------------------------------------------------------------
 
@@ -64,21 +102,8 @@ resource "google_compute_instance" "vm_instance" {
 
   tags = ["allow-ssh", "allow-traefik-http", "allow-traefik-https", "allow-nomad-api", "allow-consul-api", "allow-all-outbound"] // firewall rules
 
-  # Add config files, scripts, Nomad jobs to host
-  provisioner "file" {
-    source      = "../../share/terraform/vm_assets/"
-    destination = "/home/${split("@", data.google_client_openid_userinfo.me.email)[0]}"
-
-    connection {
-      host        = google_compute_address.lb.address
-      type        = "ssh"
-      user        = split("@", data.google_client_openid_userinfo.me.email)[0]
-      private_key = tls_private_key.vm_ssh_key.private_key_pem
-    }
-  }
-
   metadata = {
-    ssh-keys = "${split("@", data.google_client_openid_userinfo.me.email)[0]}:${tls_private_key.vm_ssh_key.public_key_openssh}"
+    enable-oslogin = "TRUE"
   }
 
   metadata_startup_script = templatefile("../../share/terraform/scripts/startup.sh",
@@ -86,6 +111,7 @@ resource "google_compute_instance" "vm_instance" {
       home_path          = "/home/${split("@", data.google_client_openid_userinfo.me.email)[0]}"
       dns_zone           = var.dns_host == "sslip.io" ? "${google_compute_address.lb.address}.${var.dns_host}" : var.dns_host,
       enable_letsencrypt = var.enable_letsencrypt,
+      storage_bucket_path = "gs://${google_storage_bucket.vm_assets.name}"
 
       nomad_version  = local.dependencies.nomad.version,
       nomad_checksum = local.dependencies.nomad.checksum,
@@ -207,16 +233,16 @@ resource "google_compute_firewall" "allow_all_outbound" {
 # SSH keypair
 # -----------------------------------------------------------------------------
 
-resource "tls_private_key" "vm_ssh_key" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
+# resource "tls_private_key" "vm_ssh_key" {
+#   algorithm = "RSA"
+#   rsa_bits  = 4096
+# }
 
-resource "local_file" "ssh_private_key_pem" {
-  content         = tls_private_key.vm_ssh_key.private_key_pem
-  filename        = ".ssh/${var.instance_name}_ssh_key_pair"
-  file_permission = "0600"
-}
+# resource "local_file" "ssh_private_key_pem" {
+#   content         = tls_private_key.vm_ssh_key.private_key_pem
+#   filename        = ".ssh/${var.instance_name}_ssh_key_pair"
+#   file_permission = "0600"
+# }
 
 # -----------------------------------------------------------------------------
 # Hippo admin password

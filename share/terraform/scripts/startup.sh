@@ -108,7 +108,6 @@ mv config.json favicon.ico logo.svg ${home_path}/hippo/linux-x64/wwwroot/assets/
 # -----------------------------------------------------------------------------
 
 cd ${home_path}
-sudo chmod +x run_servers.sh
 
 export HIPPO_ADMIN_USERNAME='${hippo_admin_username}'
 export HIPPO_ADMIN_PASSWORD='${hippo_admin_password}'
@@ -117,6 +116,10 @@ export HIPPO_FOLDER='${home_path}/hippo/linux-x64'
 
 export DNS_ZONE='${dns_zone}'
 export ENABLE_LETSENCRYPT='${enable_letsencrypt}'
+
+echo "Copying vm_assets to local instance"
+gsutil cp -r ${storage_bucket_path}/* ./
+sudo chmod +x run_servers.sh
 
 echo "Running servers using DNS zone '$DNS_ZONE'"
 ./run_servers.sh
