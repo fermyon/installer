@@ -1,13 +1,13 @@
-# output "vm_ssh_public_key" {
-#   description = "The public key for SSH access to the VM instance"
-#   value       = tls_private_key.vm_ssh_key.public_key_pem
-# }
+output "vm_ssh_public_key" {
+  description = "The public key for SSH access to the VM instance"
+  value       = tls_private_key.vm_ssh_key.public_key_pem
+}
 
-# output "vm_ssh_private_key" {
-#   description = "The private key for SSH access to the VM instance"
-#   value       = tls_private_key.vm_ssh_key.private_key_pem
-#   sensitive   = true
-# }
+output "vm_ssh_private_key" {
+  description = "The private key for SSH access to the VM instance"
+  value       = tls_private_key.vm_ssh_key.private_key_pem
+  sensitive   = true
+}
 
 output "username" {
   description = "username"
