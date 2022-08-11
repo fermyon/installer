@@ -1,5 +1,3 @@
 .terraform*
 terraform.tfstate*
 .ssh
-terraform.tfvars
-terraform_backend.tf
