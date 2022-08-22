@@ -1,6 +1,22 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Early exit for unsupported systems
+case "${OSTYPE}" in
+  linux* | darwin*)
+    ;; # Linux, MacOS, and WSL2 can proceed
+  msys | cgywin)
+    echo "The ${OSTYPE} environment is not yet supported for the Fermyon platform."
+    echo "But it will work within the Windows Subsystem for Linux."
+    echo "See https://docs.microsoft.com/en-us/windows/wsl/install for details."
+    exit 1
+    ;;
+  *)
+    echo "The ${OSTYPE} environment is not yet supported for the Fermyon platform."
+    exit 1
+    ;;
+esac
+
 require() {
   if ! hash "$1" &>/dev/null; then
     echo "'$1' not found in PATH"
