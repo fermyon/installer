@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Early exit for unsupported systems
 case "${OSTYPE}" in
-  linux* | darwin*)
+  linux-gnu* | darwin*)
     ;; # Linux, MacOS, and WSL2 can proceed
   msys | cygwin)
     echo "The ${OSTYPE} environment is not yet supported for the Fermyon platform."
