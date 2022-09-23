@@ -28,6 +28,19 @@ require consul
 require nomad
 require spin
 
+# NOTE(bacongobbler): nomad MUST run as root for the exec driver to work on Linux.
+# https://github.com/deislabs/hippo/blob/de73ae52d606c0a2351f90069e96acea831281bc/src/Infrastructure/Jobs/NomadJob.cs#L28
+# https://www.nomadproject.io/docs/drivers/exec#client-requirements
+case "$OSTYPE" in
+  linux*)
+    require sudo
+    SUDO="sudo --preserve-env=PATH"
+    ;;
+  *)
+    SUDO=
+    ;;
+esac
+
 cleanup() {
   echo
   echo "Shutting down services"
@@ -35,14 +48,6 @@ cleanup() {
   wait
 }
 trap cleanup EXIT
-
-# NOTE(bacongobbler): nomad MUST run as root for the exec driver to work on Linux.
-# https://github.com/deislabs/hippo/blob/de73ae52d606c0a2351f90069e96acea831281bc/src/Infrastructure/Jobs/NomadJob.cs#L28
-# https://www.nomadproject.io/docs/drivers/exec#client-requirements
-case "$OSTYPE" in
-  linux*) SUDO="sudo --preserve-env=PATH" ;;
-  *) SUDO= ;;
-esac
 
 # change to the directory of this script
 cd "$(dirname "${BASH_SOURCE[0]}")"
