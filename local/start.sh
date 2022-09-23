@@ -5,7 +5,7 @@ set -euo pipefail
 case "${OSTYPE}" in
   linux* | darwin*)
     ;; # Linux, MacOS, and WSL2 can proceed
-  msys | cgywin)
+  msys | cygwin)
     echo "The ${OSTYPE} environment is not yet supported for the Fermyon platform."
     echo "But it will work within the Windows Subsystem for Linux."
     echo "See https://docs.microsoft.com/en-us/windows/wsl/install for details."
