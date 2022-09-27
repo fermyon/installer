@@ -16,13 +16,13 @@ locals {
   traefik_checksum = "348e444c390156a3d17613e421ec80e23874e2388ef0cc22d7ad00a5b9c7f21a"
 
   bindle_version  = "v0.8.0"
-  bindle_checksum = "26f68ab5a03c7e6f0c8b83fb199ca77244c834f25247b9a62312eb7a89dba93c"
+  bindle_checksum = "2b1d5c8fbd10684147e3546de1c2dcd438e691441ea68ca32c23a4d1c1d81048"
 
-  spin_version  = "v0.4.0"
-  spin_checksum = "0d8f087b751bb26c43bcc45dbe0e9283da189df73ea55140efc4e3958855a7d6"
+  spin_version  = "v0.5.0"
+  spin_checksum = "c19f247730db0c54957a15b4402348be01742425a461431241213f15b8971987"
 
-  hippo_version  = "v0.17.0"
-  hippo_checksum = "2a9690cd8546108fbd27a9f0c4898d1c2c171a76219803290b526e40da1c3211"
+  hippo_version  = "v0.19.0"
+  hippo_checksum = "ec1619756897cbe4cae7789eee6787cf472cb14b439c00b9be0de1fea08a1a49"
 
   common_tags = {
     FermyonInstallation = "localtest"
