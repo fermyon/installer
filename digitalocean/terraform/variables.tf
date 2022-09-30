@@ -35,13 +35,13 @@ variable "dns_host" {
 }
 
 variable "allowed_ssh_cidr_blocks" {
-  description = "A list of CIDR-formatted IP address ranges from which the EC2 Instance will allow SSH connections"
+  description = "A list of CIDR-formatted IP address ranges from which the DO Instance will allow SSH connections"
   type        = list(string)
   default     = ["0.0.0.0/0"]
 }
 
 variable "allowed_inbound_cidr_blocks" {
-  description = "A list of CIDR-formatted IP address ranges from which the EC2 Instance will allow connections"
+  description = "A list of CIDR-formatted IP address ranges from which the DO Instance will allow connections"
   type        = list(string)
   default     = ["0.0.0.0/0"]
 }

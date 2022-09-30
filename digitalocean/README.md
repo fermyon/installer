@@ -30,7 +30,7 @@ This example creates the following resources in the provided DigitalOcean projec
       value for constructing Hippo and Bindle URLs
   - 1 custom VPC
     - Name: `${var.vpc_name}` (default: `fermyon-vpc`)
-    - Note: if this is the first VPC in a region, it will be default VPC, so this VPC can't delete by `vagrant destroy`.
+    - Note: if this is the first VPC in a region, it will be default VPC, so this VPC can't delete by `terraform destroy`.
   - 6 custom firewalls
     - Inbound connections allowed for ports 22, 80 and 443
       - see `var.allowed_inbound_cidr_blocks` for allowed origin IP addresses
@@ -46,9 +46,12 @@ It is certainly advised to scope the allowed SSH CIDR block down to a single IP 
 
 As this example takes a stock Ubuntu 20.04 LTS and then proceeds to download Fermyon and Hashistack binaries,
 the default inbound CIDR block is likely necessary for first startup. After confirmation that
-Fermyon is up and running - and as long as subsequent apps/workloads won't need access to
-the broader internet - this value may be updated on a subsequent `terraform apply` if desired, e.g.
-`terraform apply -var=allowed_inbound_cidr_blocks=["75.75.75.75/32"]`.
+Fermyon is up and running - and as long as subsequent apps/workloads/ssh won't need access to
+the broader internet - this value may be updated on a subsequent `terraform apply` if desired, e.g.:
+
+```console
+terraform apply -var='allowed_inbound_cidr_blocks=["75.75.75.75/32"]' -var='allowed_ssh_cidr_blocks=["75.75.75.75/32"]'
+```
 
 # How to Deploy
 
