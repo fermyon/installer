@@ -12,7 +12,7 @@ variable "bindle_url" {
 
 variable "hippo_version" {
   type        = string
-  default     = "v0.17.0"
+  default     = "v0.19.0"
   description = "Hippo version"
 }
 
@@ -106,7 +106,7 @@ job "hippo" {
         Hippo__PlatformDomain = var.domain
         Scheduler__Driver     = "nomad"
         Nomad__Driver         = "raw_exec"
-        
+
         # Registration configuration
         Hippo__RegistrationMode            = var.registration_mode
         Hippo__Administrators__0__Username = var.registration_mode == "AdministratorOnly" ? var.admin_username : ""
