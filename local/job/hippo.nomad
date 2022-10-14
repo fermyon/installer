@@ -12,7 +12,7 @@ variable "bindle_url" {
 
 variable "hippo_version" {
   type        = string
-  default     = "v0.19.0"
+  default     = "v0.19.1"
   description = "Hippo version"
 }
 
