@@ -2,24 +2,25 @@
 # Hashistack + Fermyon Platform versions
 # -----------------------------------------------------------------------------
 
+# TODO: use the shared dependency versions/checksums at share/terraform/dependencies.yaml instead
 locals {
-  nomad_version  = "1.3.1"
-  nomad_checksum = "d16dcea9fdfab3846e749307e117e33a07f0d8678cf28cc088637055e34e5b37"
+  nomad_version  = "1.4.1"
+  nomad_checksum = "f9327818a97fc2f29b6a9283c3175cd13ba6c774c15ee5683035c23b9a3640fa"
 
-  consul_version  = "1.12.1"
-  consul_checksum = "8d138267701fc3502dc6b01beb08ae8fac969022ab867f61bc945af38686ecc3"
+  consul_version  = "1.13.3"
+  consul_checksum = "5370b0b5bf765530e28cb80f90dcb47bd7d6ba78176c1ab2430f56e460ed279c"
 
-  vault_version  = "1.10.3"
-  vault_checksum = "c99aeefd30dbeb406bfbd7c80171242860747b3bf9fa377e7a9ec38531727f31"
+  vault_version  = "1.12.0"
+  vault_checksum = "56d140b34bec780cd458672e39b3bb0ea9e4b7e4fb9ea7e15de31e1562130d7a"
 
-  traefik_version  = "v2.7.0"
-  traefik_checksum = "348e444c390156a3d17613e421ec80e23874e2388ef0cc22d7ad00a5b9c7f21a"
+  traefik_version  = "v2.9.1"
+  traefik_checksum = "562f3c57b6a1fe381e65cd46e6deb0ac6f0ad8f2e277748262814f4c5ef65861"
 
   bindle_version  = "v0.8.0"
   bindle_checksum = "2b1d5c8fbd10684147e3546de1c2dcd438e691441ea68ca32c23a4d1c1d81048"
 
-  spin_version  = "v0.5.0"
-  spin_checksum = "c19f247730db0c54957a15b4402348be01742425a461431241213f15b8971987"
+  spin_version  = "v0.6.0"
+  spin_checksum = "fd613b75f0fdc1708d77ca18512b923d24603d4af103a74038815441ddd11573"
 
   hippo_version  = "v0.19.1"
   hippo_checksum = "46f53d44a8995453cee51ad5e9c129d30de279b9a4f8d12980b4aa805ec23054"
