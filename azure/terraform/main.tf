@@ -2,28 +2,8 @@
 # Hashistack + Fermyon Platform versions
 # -----------------------------------------------------------------------------
 
-# TODO: use the shared dependency versions/checksums at share/terraform/dependencies.yaml instead
 locals {
-  nomad_version  = "1.4.1"
-  nomad_checksum = "f9327818a97fc2f29b6a9283c3175cd13ba6c774c15ee5683035c23b9a3640fa"
-
-  consul_version  = "1.13.3"
-  consul_checksum = "5370b0b5bf765530e28cb80f90dcb47bd7d6ba78176c1ab2430f56e460ed279c"
-
-  vault_version  = "1.12.0"
-  vault_checksum = "56d140b34bec780cd458672e39b3bb0ea9e4b7e4fb9ea7e15de31e1562130d7a"
-
-  traefik_version  = "v2.9.1"
-  traefik_checksum = "562f3c57b6a1fe381e65cd46e6deb0ac6f0ad8f2e277748262814f4c5ef65861"
-
-  bindle_version  = "v0.8.0"
-  bindle_checksum = "2b1d5c8fbd10684147e3546de1c2dcd438e691441ea68ca32c23a4d1c1d81048"
-
-  spin_version  = "v0.6.0"
-  spin_checksum = "fd613b75f0fdc1708d77ca18512b923d24603d4af103a74038815441ddd11573"
-
-  hippo_version  = "v0.19.1"
-  hippo_checksum = "46f53d44a8995453cee51ad5e9c129d30de279b9a4f8d12980b4aa805ec23054"
+  dependencies = yamldecode(file("../../share/terraform/dependencies.yaml"))
 
   common_tags = {
     FermyonInstallation = "localtest"
@@ -277,26 +257,26 @@ resource "azurerm_linux_virtual_machine" "defaultVM" {
       dns_zone           = var.dns_host == "sslip.io" ? "${azurerm_public_ip.defaultIp.ip_address}.${var.dns_host}" : var.dns_host,
       enable_letsencrypt = var.enable_letsencrypt,
 
-      nomad_version  = local.nomad_version,
-      nomad_checksum = local.nomad_checksum,
+      nomad_version  = local.dependencies.nomad.version,
+      nomad_checksum = local.dependencies.nomad.checksum,
 
-      consul_version  = local.consul_version,
-      consul_checksum = local.consul_checksum,
+      consul_version  = local.dependencies.consul.version,
+      consul_checksum = local.dependencies.consul.checksum,
 
-      vault_version  = local.vault_version,
-      vault_checksum = local.vault_checksum,
+      vault_version  = local.dependencies.vault.version,
+      vault_checksum = local.dependencies.vault.checksum,
 
-      traefik_version  = local.traefik_version,
-      traefik_checksum = local.traefik_checksum,
+      traefik_version  = local.dependencies.traefik.version,
+      traefik_checksum = local.dependencies.traefik.checksum,
 
-      bindle_version  = local.bindle_version,
-      bindle_checksum = local.bindle_checksum,
+      bindle_version  = local.dependencies.bindle.version,
+      bindle_checksum = local.dependencies.bindle.checksum,
 
-      spin_version  = local.spin_version,
-      spin_checksum = local.spin_checksum,
+      spin_version  = local.dependencies.spin.version,
+      spin_checksum = local.dependencies.spin.checksum,
 
-      hippo_version           = local.hippo_version,
-      hippo_checksum          = local.hippo_checksum,
+      hippo_version           = local.dependencies.hippo.version,
+      hippo_checksum          = local.dependencies.hippo.checksum,
       hippo_registration_mode = var.hippo_registration_mode
       hippo_admin_username    = var.hippo_admin_username
       # TODO: ideally, Hippo will support ingestion of the admin password via
@@ -306,8 +286,6 @@ resource "azurerm_linux_virtual_machine" "defaultVM" {
     }
   ))
 }
-
-
 
 # -----------------------------------------------------------------------------
 # Hippo admin password
