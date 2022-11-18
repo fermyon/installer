@@ -22,7 +22,7 @@
   "devDependencies": {
     "@fermyon/styleguide": "^0.1",
     "@parcel/transformer-sass": "2.4.0",
-    "nodemon": "^2.0.15",
+    "nodemon": "^2.0.20",
     "parcel": "^2.4.0",
     "sass": "^1.49.9"
   },
