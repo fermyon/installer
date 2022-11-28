@@ -8,8 +8,8 @@ RUN apk add --no-cache libc-dev pkgconfig openssl-dev perl make
 WORKDIR /usr/src/bindle
 RUN wget https://github.com/deislabs/bindle/archive/refs/tags/v0.8.0.tar.gz
 RUN tar xf v0.8.0.tar.gz
-WORKDIR bindle-0.8.0
-RUN cargo update
+WORKDIR /usr/src/bindle/bindle-0.8.0
+RUN CARGO_NET_GIT_FETCH_WITH_CLI=true cargo update
 
 # Link openssl statically to support Ubuntu 22.04+
 RUN cargo add openssl@0.10.40 --features vendored
