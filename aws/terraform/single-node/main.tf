@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------------------
 
 locals {
-  dependencies = yamldecode(file("../../share/terraform/dependencies.yaml"))
+  dependencies = yamldecode(file("../../../share/terraform/dependencies.yaml"))
 
   common_tags = {
     FermyonInstallation = var.instance_name
@@ -75,7 +75,7 @@ resource "aws_instance" "ec2" {
 
   # Add config files, scripts, Nomad jobs to host
   provisioner "file" {
-    source      = "../../share/terraform/vm_assets/"
+    source      = "../../../share/terraform/vm_assets/"
     destination = "/home/ubuntu"
 
     connection {
@@ -86,7 +86,7 @@ resource "aws_instance" "ec2" {
     }
   }
 
-  user_data = templatefile("../../share/terraform/scripts/startup.sh",
+  user_data = templatefile("../../../share/terraform/scripts/startup.sh",
     {
       home_path          = "/home/ubuntu"
       dns_zone           = var.dns_host == "sslip.io" ? "${aws_eip.lb.public_ip}.${var.dns_host}" : var.dns_host,
