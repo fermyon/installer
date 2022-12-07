@@ -12,7 +12,7 @@ service.
 That being said, it should give users a quick look and feel for deploying apps
 using Fermyon. By default, all apps will be accessible to the broader internet
 (see the configuration details mentioned below). Additionally, when Let's Encrypt
-is enabled, apps will be provided with https URLs and TLS certs courtesy LE.
+is enabled, apps will be provided with https URLs and TLS certs.
 
 # Prerequisites
 
@@ -139,7 +139,8 @@ chmod 0600 /tmp/droplet_ssh_private_key.pem
 ssh -i /tmp/droplet_ssh_private_key.pem root@$(terraform output -raw public_ip_address)
 ```
 
-Once on the instance, output from user-data.sh can be checked like so:
+Once on the instance, output from user-data.sh, which is the script
+that runs at startup time, can be checked like so:
 
 ```console
 root@fermyon:~$ tail -n15 /var/log/cloud-init-output.log
