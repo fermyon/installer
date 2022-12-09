@@ -23,7 +23,7 @@ git clone https://github.com/fermyon/installer.git
 cd installer/aws/terraform
 ```
 
-Initialize terraform and deploy the infrastructure with Let's Encrypt to provision certs for HTTPS. See [this page](https://github.com/fermyon/installer/tree/main/aws#resources-deployed) for details about the resources that will be deployed in AWS.
+Initialize terraform and deploy the infrastructure with Let's Encrypt to provision certs for HTTPS. See [this page](https://github.com/fermyon/installer/tree/main/aws/terraform/single-node#resources-deployed) for details about the resources that will be deployed in AWS.
 
 ```console
 terraform init

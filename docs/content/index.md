@@ -36,9 +36,13 @@ While the Fermyon installer creates a single-node cluster, you can scale up  Nom
 
 ## Installing Fermyon
 
-Fermyon can be installed in one of two ways:
+Fermyon can be installed in a few ways:
 
-- Use a shell installer to [run a version locally, on bare metal, or on the cloud of your choice](/quickstart-local)
-- Use Terraform to quickly [get up and running on an Amazon EC2 instance](/quickstart-aws)
+- Use a shell installer to [run a version locally](/quickstart-local)
+- Use Terraform to deploy to your preferred cloud:
+  - Here's how to [get up and running on a single Amazon EC2 instance](/quickstart-aws)
+  - There is also a [multi-node configuration for AWS](https://github.com/fermyon/installer/tree/main/aws/terraform/multiple-nodes)
+  - There are also quick-starts for [Azure](https://github.com/fermyon/installer/tree/main/azure/README.md),
+    [DigitalOcean](https://github.com/fermyon/installer/tree/main/digitalocean/README.md) and [GCP](https://github.com/fermyon/installer/tree/main/gcp/README.md)
 
-Don't want to install Fermyon on your own account? Soon we'll have a hosted version of Fermyon. [Sign up to be notified](https://www.fermyon.com/about/#cta) when we launch.
+Don't want to install Fermyon on your own account? Try out [Fermyon Cloud](https://www.fermyon.com/cloud), our hosted option.
