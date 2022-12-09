@@ -47,10 +47,9 @@ To see these applied tags, run `terraform output common_tags`.
 
 # How to Deploy
 
-First, navigate to the `terraform` directory and initialize Terraform:
+First, initialize Terraform from this directory:
 
 ```console
-cd terraform
 terraform init
 ```
 
