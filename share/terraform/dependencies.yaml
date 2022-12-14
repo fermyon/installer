@@ -23,5 +23,5 @@ spin:
   checksum: "fd613b75f0fdc1708d77ca18512b923d24603d4af103a74038815441ddd11573"
 
 hippo:
-  version: "v0.19.1"
-  checksum: "46f53d44a8995453cee51ad5e9c129d30de279b9a4f8d12980b4aa805ec23054"
+  version: "v0.20.0"
+  checksum: "dd4431475b6bbf201075cd6d67320848ae03d4b57b753fb880b2196c58aece71"
