@@ -21,7 +21,7 @@ is enabled, apps will be provided with https URLs and TLS certs.
 
 # Resources deployed
 
-This example creates the following resources in the provided DigitalOcean project:
+This example creates the following resources in the provided Civo account:
   - 1 Civo instance type
     - Name: `${var.instance_name}` (default: `fermyon`)
     - Type: `${var.instance_size}` (default: `g3.large`)
