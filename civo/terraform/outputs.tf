@@ -1,5 +1,5 @@
 output "civo_ssh_public_key" {
-  description = "The public key for SSH access to the Droplet instance"
+  description = "The public key for SSH access to the Civo instance"
   value       = tls_private_key.civo_ssh_key.public_key_pem
 }
 
