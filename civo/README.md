@@ -130,7 +130,7 @@ terraform destroy
 
 # Troubleshooting/Debugging
 
-## SSH into the Droplet instance
+## SSH into the Civo instance
 
 ```console
 terraform output -raw civo_ssh_private_key > /tmp/civo_ssh_private_key
