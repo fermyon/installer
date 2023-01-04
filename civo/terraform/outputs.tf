@@ -11,7 +11,7 @@ output "civo_ssh_private_key" {
 
 output "public_ip_address" {
   description = "The public IP address associated with the Droplet instance"
-  value       = civo_instance.spin.public_ip
+  value       = civo_reserved_ip.lb.ip
 }
 
 output "dns_host" {
