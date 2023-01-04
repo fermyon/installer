@@ -34,7 +34,7 @@ apps.
 ## AWS
 ---
 
-The [AWS single node](./aws/single-node/README.md) and [AWS multiple node](./aws/multiple-nodes/README.md) scenarios are great options to go
+The [AWS single node](./aws/terraform/single-node/README.md) and [AWS multiple node](./aws/terraform/multiple-nodes/README.md) scenarios are great options to go
 if you'd like to run Fermyon in a separate environment.
 The former is quicker to launch and uses less cloud resources,
 while the latter is more robust and enables scaling the cluster size to suit your needs.
