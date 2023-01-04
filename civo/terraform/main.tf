@@ -122,6 +122,12 @@ resource "civo_firewall" "ingress_egress" {
   ingress_rule {
     action = "allow"
     protocol         = "tcp"
+    port_range       = "80"
+    cidr = var.allowed_inbound_cidr_blocks
+  }
+  ingress_rule {
+    action = "allow"
+    protocol         = "tcp"
     port_range       = "443"
     cidr = var.allowed_inbound_cidr_blocks
   }
