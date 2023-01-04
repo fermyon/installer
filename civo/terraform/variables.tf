@@ -17,7 +17,7 @@ variable "instance_name" {
 }
 
 variable "instance_size" {
-  description = "The size of Droplet to run for each node in the cluster (Default: g3.large)"
+  description = "The size of the Civo instance to run for each node in the cluster (Default: g3.large)"
   type        = string
   default     = "g3.large"
 }
