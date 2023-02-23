@@ -21,6 +21,7 @@ Spin-based applications.
 # Installers
 
 ## Local
+
 ---
 
 Looking to install Fermyon on your local machine? Follow the
@@ -32,6 +33,7 @@ is the quickest and easiest method to launch Fermyon and begin deploying
 apps.
 
 ## AWS
+
 ---
 
 The [AWS single node](./aws/terraform/single-node/README.md) and [AWS multiple node](./aws/terraform/multiple-nodes/README.md) scenarios are great options to go
@@ -48,6 +50,7 @@ within 5 minutes of invoking `terraform apply`. From there, you can start
 deploying your applications.
 
 ## Azure
+
 ---
 
 The [Azure Quick-start](./azure/README.md) is a great option to go if you'd like
@@ -62,6 +65,7 @@ within 5 minutes of invoking `terraform apply`. From there, you can start
 deploying your applications.
 
 ## GCP
+
 ---
 
 The [GCP Quick-start](./gcp/README.md) is a great option to go if you'd like
@@ -76,6 +80,7 @@ within 5 minutes of invoking `terraform apply -var='project_id=<project_id>'`. F
 deploying your applications.
 
 ## DigitalOcean
+
 ---
 
 The [DigitalOcean Quick-start](./digitalocean/README.md) is a great option to go if you'd like
@@ -90,6 +95,7 @@ within 5 minutes of invoking `terraform apply`. From there, you can start
 deploying your applications.
 
 ## Civo
+
 ---
 
 The [Civo Quick-start](./civo/README.md) is a great option to go if you'd like
@@ -98,6 +104,18 @@ to run Fermyon in a separate environment.
 This installer utilizes [Terraform](https://terraform.io) to deploy a
 lightweight, working example of Fermyon on [Civo](https://www.civo.com/),
 using only a minimal array of resources needed to run the services.
+
+You'll be able to interact with publicly-accessible Bindle and Hippo services
+within 5 minutes of invoking `terraform apply`. From there, you can start
+deploying your applications.
+
+## Equinix Metal
+
+---
+
+The [Equinix Metal Quick-start](./equinix-metal/README.md) is a great option to go if you'd like to run Fermyon on bare metal for better performance or use advanced routing with BGP.
+
+This installer utilizes [Terraform](https://terraform.io) to deploy a working example of Fermyon on in multiple metros with a global, anycast, BGP advertised IP on [Equinix Metal](https://console.equinix.com/).
 
 You'll be able to interact with publicly-accessible Bindle and Hippo services
 within 5 minutes of invoking `terraform apply`. From there, you can start
