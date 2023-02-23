@@ -14,6 +14,13 @@ output "public_ip_address" {
   value       = equinix_metal_reserved_ip_block.global_ip.network
 }
 
+output "regional_ip_addresses" {
+  description = "Regional IP addresses"
+  value = tomap({
+    for k, device in equinix_metal_device.fermyon : k => device.access_public_ipv4
+  })
+}
+
 output "dns_host" {
   description = "The DNS host to use for construction of the root domain for Fermyon Platform services and apps"
   value       = var.dns_host

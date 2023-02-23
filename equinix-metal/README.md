@@ -3,7 +3,7 @@
 This guide illustrates how to install Fermyon on Equinix Metal using Terraform.
 
 As such, this is intended solely for evaluation and/or demo scenarios, i.e.
-*not* for production.
+_not_ for production.
 
 All Hashistack (Nomad, Consul, Vault), Traefik and Fermyon platform processes run
 without any redundancy on a single Droplet instance. There is no data backup for any
@@ -23,15 +23,14 @@ is enabled, apps will be provided with https URLs and TLS certs.
 
 This example creates the following resources in the provided Equinix Metal project:
 
-  - 1 bare metal server
-    - Name: `${var.instance_name}` (default: `fermyon`)
-    - Type: `${var.instance_type}` (default: `c3.small.x86`)
-  - 1 Reserved Global IP address
-    - This is useful as it won't change with instance reboots and is a known
-      value for constructing Hippo and Bindle URLs
-  - 1 SSH keypair
-    - see `var.allowed_ssh_cidr_blocks` for allowed origin IP addresses
-
+- 1 bare metal server
+  - Name: `${var.instance_name}` (default: `fermyon`)
+  - Type: `${var.instance_type}` (default: `c3.small.x86`)
+- 1 Reserved Global IP address
+  - This is useful as it won't change with instance reboots and is a known
+    value for constructing Hippo and Bindle URLs
+- 1 SSH keypair
+  - see `var.allowed_ssh_cidr_blocks` for allowed origin IP addresses
 
 # How to Deploy
 
@@ -54,6 +53,16 @@ Deploy with all defaults (http-based URLs):
 terraform apply
 ```
 
+When you run `terraform apply`, it'll ask for your `project_id`. You can get this by logging into the [Equinix Metal console](https://console.equinix.com).
+
+If you don't want to enter this everytime, you can add it to the `terraform.tfvars` file or add it to the `apply` command, like so: `terraform apply -var="project_id=XYZ"`
+
+```json
+{
+  "project_id": "XYZ"
+}
+```
+
 Deploy with all defaults and use Let's Encrypt to provision certs for TLS/https:
 
 ```console
@@ -73,7 +82,7 @@ terraform apply -var='dns_host=example.com'
 ```
 
 Quick disclaimer when Let's Encrypt is enabled: if the DNS record does not propagate in time,
-Let's Encrypt may incur a rate limit on your domain. Create the A record for *.example.com as soon as you can,
+Let's Encrypt may incur a rate limit on your domain. Create the A record for \*.example.com as soon as you can,
 making sure it points to the provisioned public IP address.
 See https://letsencrypt.org/docs/staging-environment/#rate-limits for more details.
 
@@ -92,11 +101,11 @@ $(terraform output -raw environment)
 This will export values into your shell for the following environment
 variables:
 
-  - `DNS_DOMAIN`
-  - `HIPPO_USERNAME`
-  - `HIPPO_PASSWORD`
-  - `HIPPO_URL`
-  - `BINDLE_URL`
+- `DNS_DOMAIN`
+- `HIPPO_USERNAME`
+- `HIPPO_PASSWORD`
+- `HIPPO_URL`
+- `BINDLE_URL`
 
 Now you're ready to start building and deploying applications on Fermyon!
 Follow the [Deploying to Fermyon](../deploy.md) guide for the next steps.
