@@ -18,6 +18,8 @@ is enabled, apps will be provided with https URLs and TLS certs.
 
 - An Equinix Metal account with a user level API key. See [here](https://console.equinix.com/profile/api-keys) for more details.
 - The [terraform CLI](https://learn.hashicorp.com/tutorials/terraform/install-cli#install-terraform)
+- Enable BGP for your project. Go to "Networking -> BGP" and select "Activate" if present.
+  - If you get stuck, see [here](https://metal.equinix.com/developers/docs/networking/bgp/) for more details.
 
 # Resources deployed
 
