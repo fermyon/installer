@@ -1,0 +1,4 @@
+**/.terraform*
+**/terraform.tfstate*
+hetzner_ssh_key
+hetzner_ssh_key.pub
