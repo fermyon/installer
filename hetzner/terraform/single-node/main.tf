@@ -7,7 +7,7 @@ locals {
 }
 
 # -----------------------------------------------------------------------------
-# Elastic IP to persist through instance restarts and serve as a known value
+# Floating IP to persist through instance restarts and serve as a known value
 # for filling out DNS via chosen host, eg 44.194.137.14
 # -----------------------------------------------------------------------------
 
