@@ -1,6 +1,12 @@
+variable "datacenters" {
+  type = string
+  default = "dc1"
+  description = "a comma separated list of strings which determines which datacenters a service should be deployed to; i.e. \"dc1,dc2\".  String will be coerced to a list at evaluation."
+}
+
 job "traefik" {
   region      = "global"
-  datacenters = ["dc1"]
+  datacenters = split(",", var.datacenters)
   type        = "service"
 
   group "traefik" {

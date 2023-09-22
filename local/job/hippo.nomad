@@ -1,3 +1,9 @@
+variable "datacenters" {
+  type = string
+  default = "dc1"
+  description = "a comma separated list of strings which determines which datacenters a service should be deployed to; i.e. \"dc1,dc2\".  String will be coerced to a list at evaluation."
+}
+
 variable "domain" {
   type        = string
   default     = "local.fermyon.link"
@@ -12,8 +18,14 @@ variable "bindle_url" {
 
 variable "hippo_version" {
   type        = string
-  default     = "v0.19.1"
+  default     = "v0.20.2"
   description = "Hippo version"
+}
+
+variable "tags" {
+  default = ""
+  description = "a semicolon-separated list of tags to pass to Traefik"
+  type = string
 }
 
 variable "os" {
@@ -28,13 +40,18 @@ variable "os" {
 
 variable "registration_mode" {
   type    = string
-  default = "Open"
+  default = "AdministratorOnly"
   description = "The Hippo registration mode. Options are 'Open', 'Closed' and 'AdministratorOnly'. (Default: AdministratorOnly)"
 
   validation {
     condition     = var.registration_mode == "Open" || var.registration_mode == "Closed" || var.registration_mode == "AdministratorOnly"
     error_message = "The Hippo registration mode must be 'Open', 'Closed' or 'AdministratorOnly'."
   }
+}
+
+variable "arch" {
+  default = "x64"
+  description = "which architecture to use; available architectures varies by OS, but the only two available options are `x64` and `arm64`"
 }
 
 variable "admin_username" {
@@ -50,7 +67,7 @@ variable "admin_password" {
 }
 
 job "hippo" {
-  datacenters = ["dc1"]
+  datacenters = split(",", var.datacenters)
   type        = "service"
 
   group "hippo" {
@@ -64,10 +81,10 @@ job "hippo" {
       name = "hippo"
       port = "http"
 
-      tags = [
+      tags = concat([
         "traefik.enable=true",
         "traefik.http.routers.hippo.rule=Host(`hippo.${var.domain}`)",
-      ]
+      ], split(";", var.tags))
 
       check {
         name     = "alive"
@@ -81,7 +98,7 @@ job "hippo" {
       driver = "raw_exec"
 
       artifact {
-        source = "https://github.com/deislabs/hippo/releases/download/${var.hippo_version}/hippo-server-${var.os}-x64.tar.gz"
+        source = "https://github.com/deislabs/hippo/releases/download/${var.hippo_version}/hippo-server-${var.os}-${var.arch}.tar.gz"
       }
 
       artifact {
@@ -90,7 +107,7 @@ job "hippo" {
 
       artifact {
         source = "https://gist.githubusercontent.com/bacongobbler/48dc7b01aa99fa4b893eeb6b62f8cd27/raw/fb4dae8f42bc6aea22b2566084d01fa0de845e7c/logo.svg"
-        destination = "local/${var.os}-x64/wwwroot/assets/"
+        destination = "local/${var.os}-${var.arch}/wwwroot/assets/"
       }
 
       artifact {
@@ -99,7 +116,7 @@ job "hippo" {
 
       artifact {
         source = "https://www.fermyon.com/favicon.ico"
-        destination = "local/${var.os}-x64/wwwroot/assets/"
+        destination = "local/${var.os}-${var.arch}/wwwroot/assets/"
       }
 
       env {
@@ -126,7 +143,7 @@ job "hippo" {
 
       config {
         command = "bash"
-        args    = ["-c", "mv local/styles.css local/${var.os}-x64/wwwroot/ && mv local/config.json local/${var.os}-x64/wwwroot/assets/ && cd local/${var.os}-x64 && ./Hippo.Web"]
+        args    = ["-c", "mv local/styles.css local/${var.os}-${var.arch}/wwwroot/ && mv local/config.json local/${var.os}-${var.arch}/wwwroot/assets/ && cd local/${var.os}-${var.arch} && ./Hippo.Web"]
       }
     }
   }

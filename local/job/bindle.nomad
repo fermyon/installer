@@ -1,3 +1,9 @@
+variable "datacenters" {
+  type = string
+  default = "dc1"
+  description = "a comma separated list of strings which determines which datacenters a service should be deployed to; i.e. \"dc1,dc2\".  String will be coerced to a list at evaluation."
+}
+
 variable "domain" {
   type        = string
   default     = "local.fermyon.link"
@@ -24,8 +30,14 @@ variable "arch" {
   }
 }
 
+variable "version" {
+  default = "v0.8.2"
+  description = "declares which release of bindle to target"
+  type = string
+}
+
 job "bindle" {
-  datacenters = ["dc1"]
+  datacenters = split(",", var.datacenters)
   type        = "service"
 
   group "bindle" {
@@ -58,9 +70,7 @@ job "bindle" {
       driver = "raw_exec"
 
       artifact {
-        source = lookup({
-          linux="https://raw.githubusercontent.com/fermyon/installer/93008bc6461076da5c5f7f99cffc3e68b1955a17/local/bindle/bindle-server"
-        }, var.os, "https://bindle.blob.core.windows.net/releases/bindle-v0.8.0-${var.os}-${var.arch}.tar.gz")
+        source = "https://bindle.blob.core.windows.net/releases/bindle-${var.version}-${var.os}-${var.arch}.tar.gz"
       }
 
       env {

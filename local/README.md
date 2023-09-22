@@ -20,7 +20,21 @@ The environment is ephemeral and will not persist any data.
 ```
 
 # Deploying to Fermyon
+## Using 'AdministratorOnly' registration mode (default)
+When using the `AdministratorOnly` registration mode, only a single
+administration account will be able to schedule workloads.  When running your
+Nomad job, you will have to pass in a value for the following variables:
+- `admin_username`
+- `admin_password`
 
+Using the provided `start.sh` script, you can set the environment variables
+`HIPPO_ADMIN_USERNAME` and `HIPPO_ADMIN_PASSWORD` to override the default 
+values (`admin`, and `password`, respectively); i.e.:
+```
+HIPPO_ADMIN_USERNAME=myclevername HIPPO_ADMIN_PASSWORD=<strong random password> ./start.sh
+```
+
+## Using 'Open' registration mode
 Once the script finishes deploying Fermyon services it will print a list of
 export statements. Copy these to your clipboard, leave the script running and
 open a new terminal window.
