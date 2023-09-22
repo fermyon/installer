@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+export NOMAD_VAR_admin_username="${HIPPO_ADMIN_USERNAME:=admin}"
+export NOMAD_VAR_admin_password="${HIPPO_ADMIN_PASSWORD:=password}"
+
 # Early exit for unsupported systems
 case "${OSTYPE}" in
   linux-gnu* | darwin*)
@@ -85,10 +88,10 @@ echo "Starting bindle job..."
 
 case "$(uname -m)" in
   amd64 | x86_64)
-    arch=amd64
+    export NOMAD_VAR_arch=amd64
     ;;
   aarch64 | arm64)
-    arch=aarch64
+    export NOMAD_VAR_arch=aarch64
     ;;
   *)
     echo "$(uname -m) architecture not supported."
@@ -96,11 +99,13 @@ case "$(uname -m)" in
 esac
 
 case "${OSTYPE}" in
-  darwin*)
-    nomad run -var="os=macos" -var="arch=${arch}" job/bindle.nomad
-    ;;
   linux*)
-    nomad run -var="os=linux" -var="arch=${arch}" job/bindle.nomad
+    export NOMAD_VAR_os=linux
+    nomad run job/bindle.nomad
+    ;;
+  darwin*)
+    export NOMAD_VAR_os=macos
+    nomad run job/bindle.nomad
     ;;
   *)
     echo "Bindle is only started on MacOS and Linux"
@@ -109,12 +114,31 @@ esac
 
 echo "Starting hippo job..."
 
-case "${OSTYPE}" in
-  darwin*)
-    nomad run -var="os=osx" job/hippo.nomad
+# Hippo uses different terms to describe architecture than bindle does, so we
+# need to re-export our `arch` variable
+case "$(uname -m)" in
+  amd64 | x86_64)
+    export NOMAD_VAR_arch=x64
     ;;
+  aarch64 | arm64)
+    export NOMAD_VAR_arch=arm64
+    ;;
+  *)
+    echo "$(uname -m) architecture not supported."
+    ;;
+esac
+
+case "${OSTYPE}" in
   linux*)
-    nomad run -var="os=linux" job/hippo.nomad
+    # Our os declaration will have been set above for bindle and doesn't
+    # change for hippo
+    nomad run job/hippo.nomad
+    ;;
+  darwin*)
+    # Hippo and bindle use different terms for mac support though, so we 
+    # re-export that value here.
+    export NOMAD_VAR_os=osx NOMAD_VAR_arch=x64
+    nomad run job/hippo.nomad
     ;;
   *)
     echo "Hippo is only started on MacOS and Linux"
