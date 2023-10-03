@@ -30,7 +30,7 @@ variable "instance_name" {
 variable "instance_type" {
   description = "The type of VM Instance to run for each node in the cluster (Default: g1-small)"
   type        = string
-  default     = "g1-small"
+  default     = "e1-small"
 }
 
 variable "enable_letsencrypt" {
