@@ -8,12 +8,10 @@ The production version of the website is deployed whenever commits are pushed to
 
 ## Manual Deploys
 
-Deployments may also be [triggered manually](https://github.com/fermyon/installer/actions/workflows/deploy.yml), providing a choice of `ref`, `sha` and `environment` (eg canary or prod).
+Deployments may also be [triggered manually](https://github.com/fermyon/installer/actions/workflows/deploy.yml), providing a choice of `ref` and `sha`.
 
 ## Nomad jobs
 
 We currently deploy the website via its Nomad job directly. (In the future, we envision running the website as a Fermyon Cloud app.)
 
-The [publish-fermyon-dev](./publish-fermyon-dev.nomad) Nomad job checks out this repo's source code and publishes it to Bindle.
-
-The [fermyon-dev](./fermyon-dev.nomad) Nomad job contains configuration for the running website, including the bindle ID to run from.
+The [platform-docs](./platform-docs.nomad) Nomad job contains configuration for the running website, including the OCI reference to run from.
