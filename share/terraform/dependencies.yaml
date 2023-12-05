@@ -1,27 +1,27 @@
 nomad:
-  version: "1.4.1"
-  checksum: "f9327818a97fc2f29b6a9283c3175cd13ba6c774c15ee5683035c23b9a3640fa"
+  version: "1.6.1"
+  checksum: "e4c01c51c393b266aee4ff184dd97704ae3d838c233a6189425a9f1c31a55f4f"
 
-consul: 
-  version: "1.13.3"
-  checksum: "5370b0b5bf765530e28cb80f90dcb47bd7d6ba78176c1ab2430f56e460ed279c"
+consul:
+  version: "1.16.1"
+  checksum: "a38d62979f305298a6fcf8172354f169ae7d917cf8b1376ee9cae0fcbfd22a05"
 
 vault:
-  version: "1.12.0"
-  checksum: "56d140b34bec780cd458672e39b3bb0ea9e4b7e4fb9ea7e15de31e1562130d7a"
+  version: "1.14.1"
+  checksum: "762d74eb9663d53d09c2f1a34f60c321fb2e2947a28eec22f0e1c1a6b8385d74"
 
 traefik:
-  version: "v2.9.1"
-  checksum: "562f3c57b6a1fe381e65cd46e6deb0ac6f0ad8f2e277748262814f4c5ef65861"
+  version: "v2.10.4"
+  checksum: "96109e88ea1c95711de4ad0ea0833c2912986525d222b721731157bd5d172459"
 
 bindle:
-  version: "v0.8.0"
-  checksum: "2b1d5c8fbd10684147e3546de1c2dcd438e691441ea68ca32c23a4d1c1d81048"
+  version: "v0.8.2"
+  checksum: "dc6e21f80ef3ae7f719093ff80a14ce7143af2167e80c81a89f619b91074905c"
 
 spin:
-  version: "v0.6.0"
-  checksum: "fd613b75f0fdc1708d77ca18512b923d24603d4af103a74038815441ddd11573"
+  version: "v1.4.1"
+  checksum: "199881bf6c676d698e8fc910f7dc37aaa557d5db5ad2e080f65c48bac5fa786a"
 
 hippo:
-  version: "v0.19.1"
-  checksum: "46f53d44a8995453cee51ad5e9c129d30de279b9a4f8d12980b4aa805ec23054"
+  version: "v0.20.1"
+  checksum: "6b7bd79a5530533a0c75eafabfc204c1c6335c8891d78ef96e4b88bf1bf2966e"
