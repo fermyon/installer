@@ -78,7 +78,9 @@ accessing the dashboard URL ([hippo.local.fermyon.link](http://hippo.local.fermy
 ![Creating a new account](static/image/docs/hippo-account.png)
 
 Now, you can export the `HIPPO_USERNAME` and `HIPPO_PASSWORD` environment variables
-in the terminal, and proceed to creating and deploying the first application:
+in the terminal, and proceed to creating and deploying the first application (you may need 
+to run `spin templates install --git https://github.com/fermyon/spin` first if you just 
+installed `spin` and haven't created applications from a template before):
 
 ```console
 $ spin new http-rust hello-fermyon
