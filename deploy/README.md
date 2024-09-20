@@ -2,6 +2,8 @@
 
 The [Fermyon Platform](https://www.fermyon.dev) website is deployed via the [deploy.yaml](../.github/workflows/deploy.yml) GitHub workflow.
 
+(Note: currently this website consists of redirects to Fermyon's [Developer site](https://developer.fermyon.com/))
+
 ## Auto Deploys
 
 The production version of the website is deployed whenever commits are pushed to the `main` branch.

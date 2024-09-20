@@ -1,20 +1,16 @@
-name = "fermyon-dev"
-spin_version = "1"
-version = "0.1.0"
-description = "The Fermyon Platform website."
-authors = [ "Fermyon Engineering <engineering@fermyon.com>" ]
-trigger = { type = "http", base = "/" }
+spin_manifest_version = 2
 
-[[component]]
-source = "modules/bartholomew.wasm"
-id = "bartholomew"
-files = [ "content/**/*" , "templates/*", "scripts/*", "config/*"]
-[component.trigger]
+[application]
+name = "fermyon-dev"
+version = "0.1.1"
+description = "The Fermyon Platform website."
+authors = ["Fermyon Engineering <engineering@fermyon.com>"]
+
+[[trigger.http]]
+id = "trigger-redirect"
+component = "redirect"
 route = "/..."
 
-[[component]]
-source = "modules/spin_static_fs.wasm"
-id = "fileserver"
-files = [ { source = "static/", destination = "/" } ]
-[component.trigger]
-route = "/static/..."
+[component.redirect]
+source = { url = "https://github.com/fermyon/spin-redirect/releases/download/v0.1.0/redirect.wasm", digest = "sha256:8bee959843f28fef2a02164f5840477db81d350877e1c22cb524f41363468e52" }
+environment = { DESTINATION = "https://developer.fermyon.com" }
