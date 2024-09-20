@@ -9,28 +9,17 @@ jobs:
   docs:
     runs-on: "ubuntu-latest"
     env:
-      SPIN_VERSION: v0.6.0
+      SPIN_VERSION: v2.0.1
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install bart
-        run: |
-          curl -LOs https://github.com/fermyon/bartholomew/releases/download/v0.5.0/bart
-          chmod +x bart
-          mv bart /usr/local/bin
-
       - name: Install spin
-        run: |
-          curl -LOs https://github.com/fermyon/spin/releases/download/${SPIN_VERSION}/spin-${SPIN_VERSION}-linux-amd64.tar.gz
-          tar zxvf spin-${SPIN_VERSION}-linux-amd64.tar.gz -C /usr/local/bin
-          chmod +x /usr/local/bin/spin
-
-      - name: Check site content
-        run: |
-          cd docs
-          npm run check-content
+        uses: fermyon/actions/spin/setup@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          version: ${{ env.SPIN_VERSION }}
 
       - name: Test site
         run: |
           cd docs
-          npm run test-server
+          ./tests/test-server.sh
