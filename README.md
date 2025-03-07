@@ -1,3 +1,13 @@
+# ⚠️ Deprecation Notice
+
+🚨 **This project is no longer maintained.** 🚨  
+
+As of March 6, 2025, this repository has been **deprecated** and will no longer receive updates, bug fixes, or support. If you are interested in self hosting Spin applications, please consider using the [SpinKube](https://spinkube.dev)
+
+The repository will remain available for historical reference.
+
+Thank you to everyone who contributed and used this project!  
+
 # Fermyon Installer
 
 Fermyon is a platform to host [Spin](https://spin.fermyon.dev) applications
